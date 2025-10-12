@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>لوحة تحكم المسوِّق</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/fonts/tajawal.css">
+
+    <style>
+        :root {
+            --primary-color: #0d3b14; /* أخضر داكن */
+            --secondary-color: #e5a72d; /* ذهبي */
+            --accent-color: #f7f3e9; /* بيج فاتح */
+            --text-color-dark: #2d3748;
+            --danger-color: #dc3545;
+            /* 🟢 إصلاح المتغيرات المفقودة */
+            --white-color: #ffffff; 
+            --muted-color: #4a5568;
+        }
+
+        body {
+            font-family: "Tajawal", sans-serif;
+            background: linear-gradient(120deg, #f7f3e9, #eaf0f5);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: var(--text-color-dark);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 50px;
+            background: var(--white-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        /* تنسيق بطاقة الإحصائيات */
+        .stats-card {
+            background: var(--accent-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .stats-card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .stats-count {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--secondary-color);
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .referral-link-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px dashed var(--primary-color);
+            margin-top: 15px;
+            word-break: break-all;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .referral-link-box:hover {
+            background: #e6f7ff;
+        }
+
+        /* تفاصيل المسوق */
+        .details-card {
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 20px;
+            background: #fff;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dotted #eee;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 🟢 تنسيق الأيقونات الجديدة */
+        .detail-item i {
+            color: var(--primary-color);
+            margin-left: 10px;
+            font-size: 16px;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: var(--muted-color);
+            font-size: 15px;
+            display: flex; /* لتجميع النص مع الأيقونة */
+            align-items: center;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-color-dark);
+            font-size: 15px;
+            text-align: left;
+        }
+        
+        /* رسائل الحالة والتحميل */
+        #statusMessage {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .loading {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: var(--danger-color);
+        }
+
+        .id-highlight {
+            background-color: var(--secondary-color);
+            padding: 2px 8px;
+            border-radius: 5px;
+            color: var(--primary-color);
+            font-weight: 900;
+            font-size: 1.1em;
+        }
+        
+        /* زر النسخ */
+        .copy-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .copy-btn:hover {
+            background: #1a5c24;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <header>
+        <h1>لوحة تحكم المسوِّق</h1>
+        <p id="marketer-id-display">الرجاء إدخال المعرّف في الرابط</p>
+    </header>
+
+    <div class="content">
+        <div id="statusMessage" class="loading" style="display:none;">جارٍ التحميل...</div>
+
+        <div id="dashboardContent" style="display:none;">
+            
+            <div class="stats-card">
+                <h2>إجمالي عدد المسجّلين عبر الرابط الخاص بك</h2>
+                <span class="stats-count" id="referrals-count">0</span>
+                
+                <h2 style="margin-top: 20px;">رابط الإحالة الخاص بك</h2>
+                <div class="referral-link-box" id="referral-link-box" title="اضغط لنسخ الرابط">
+                    <span id="referral-link-text">...</span>
+                    <button class="copy-btn" id="copy-btn"><i class="fas fa-copy"></i> نسخ</button>
+                </div>
+                <p style="font-size: 12px; color: #555; margin-top: 10px;">انقر على الرابط أو الزر لنسخه ومشاركته.</p>
+            </div>
+
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;">بيانات التسجيل</h2>
+            <div class="details-card" id="personal-details">
+                </div>
+            <p style="font-size: 13px; color: var(--danger-color); margin-top: 20px;">*ملاحظة: تُعرض هنا بيانات أول تسجيل لك كمسوِّق فقط.</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 🛑 يجب استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الذي جهزناه
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYN1ugMmzpj-ozZ0cRL2coDrNejEvRYccijox6srUN33R7PUKTGNLt62xzR95CWhOiQw/exec'; 
+    
+    // 🛑 يجب استبدال هذا بالرابط الأساسي لصفحة التسجيل (بدون marketer_id)
+    const BASE_REGISTRATION_URL = 'https://sklilia.netlify.app/index'; 
+
+    const statusMessage = document.getElementById('statusMessage');
+    const dashboardContent = document.getElementById('dashboardContent');
+    const marketerIdDisplay = document.getElementById('marketer-id-display');
+    const referralsCount = document.getElementById('referrals-count');
+    const personalDetails = document.getElementById('personal-details');
+    const referralLinkText = document.getElementById('referral-link-text');
+    const copyBtn = document.getElementById('copy-btn');
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // 🟢 إضافة الأيقونات لقاموس الترجمة
+    const translations = {
+        'تاريخ_التسجيل': { label: 'تاريخ التسجيل', icon: 'fas fa-calendar-alt' },
+        'marketer_id': { label: 'معرّف المسوّق', icon: 'fas fa-id-badge' },
+        'الحالة': { label: 'الحالة', icon: 'fas fa-check-circle' },
+        'fullname': { label: 'الاسم الكامل', icon: 'fas fa-user' },
+        'gender': { label: 'الجنس', icon: 'fas fa-venus-mars' },
+        'country': { label: 'البلد', icon: 'fas fa-globe' },
+        'phone': { label: 'رقم الهاتف', icon: 'fab fa-whatsapp' }, // استخدام أيقونة واتساب
+        'email': { label: 'البريد الإلكتروني', icon: 'fas fa-envelope' }
+    };
+
+    /**
+     * @function updateStatus
+     * يعرض رسالة حالة للمستخدم.
+     * @param {string} message - الرسالة المراد عرضها.
+     * @param {string} type - نوع الرسالة ('loading', 'error', 'success').
+     */
+    function updateStatus(message, type = 'loading') {
+        statusMessage.textContent = message;
+        statusMessage.className = type;
+        statusMessage.style.display = 'block';
+        dashboardContent.style.display = 'none';
+    }
+
+    /**
+     * @function displayData
+     * يعرض البيانات المسترجعة من Apps Script.
+     * @param {object} data - البيانات المسترجعة.
+     */
+    function displayData(data) {
+        statusMessage.style.display = 'none';
+        dashboardContent.style.display = 'block';
+
+        // 1. عرض المعرّف في العنوان
+        marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
+
+        // 2. عرض عدد الإحالات
+        referralsCount.textContent = data.referrals_count || 0;
+
+        // 3. بناء رابط الإحالة وعرضه
+        const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
+        referralLinkText.textContent = fullReferralLink;
+        
+        // 4. عرض البيانات الشخصية
+        personalDetails.innerHTML = '';
+        if (data.personal_data && data.personal_data.length > 0) {
+            // نعرض بيانات التسجيل الأول فقط
+            const firstEntry = data.personal_data[0]; 
+            
+            // استخدام مفاتيح الترجمة لعرض البيانات بترتيب ثابت
+            Object.keys(translations).forEach(key => {
+                const config = translations[key]; // 🟢 استخدام الكائن الجديد
+                const label = config.label;
+                const icon = config.icon;
+                const value = firstEntry[key] || 'غير متوفر';
+
+                const item = document.createElement('div');
+                item.className = 'detail-item';
+                // 🟢 تضمين الأيقونة في الـ detail-label
+                item.innerHTML = `
+                    <span class="detail-label"><i class="${icon}"></i>${label}</span>
+                    <span class="detail-value">${value}</span>
+                `;
+                personalDetails.appendChild(item);
+            });
+            
+        } else {
+            personalDetails.innerHTML = '<p style="text-align: center; color: var(--danger-color);">❌ لم يتم العثور على بيانات تسجيلك كمسوِّق. تأكد من إرسال بياناتك أولاً.</p>';
+        }
+    }
+
+
+    /**
+     * @function fetchData
+     * يجلب البيانات من Apps Script.
+     * @param {string} marketerId - معرف المسوِّق.
+     */
+    async function fetchData(marketerId) {
+        updateStatus('جارٍ جلب الإحصائيات والبيانات...');
+        
+        const fetchUrl = `${APPS_SCRIPT_URL}?marketerId=${marketerId}`;
+
+        try {
+            const response = await fetch(fetchUrl);
+            const data = await response.json();
+
+            if (data.status === 'success') {
+                displayData(data);
+            } else {
+                updateStatus(data.message || '❌ فشل في جلب البيانات من الخادم.', 'error');
+            }
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            updateStatus('❌ حدث خطأ في الاتصال. تأكد من نشر سكربت Apps Script بشكل صحيح.', 'error');
+        }
+    }
+
+    // 🔑 عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', () => {
+        const marketerId = urlParams.get('marketerId');
+
+        if (marketerId) {
+            fetchData(marketerId.toUpperCase());
+        } else {
+            updateStatus('⚠️ لا يوجد معرف مسوِّق في الرابط. الرجاء استخدام رابط يحتوي على: ?marketerId=XXXXXX', 'error');
+            marketerIdDisplay.innerHTML = `الرجاء إضافة المعرّف في الرابط.`;
+        }
+        
+        // 5. معالج حدث النسخ
+        copyBtn.addEventListener('click', async () => {
+            const link = referralLinkText.textContent;
+            try {
+                await navigator.clipboard.writeText(link);
+                copyBtn.textContent = 'تم النسخ ✅';
+                setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> نسخ'; }, 2000);
+            } catch (err) {
+                console.error('فشل النسخ:', err);
+                copyBtn.textContent = 'فشل النسخ ❌';
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
