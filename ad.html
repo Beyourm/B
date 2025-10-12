@@ -15,7 +15,6 @@
             --accent-color: #f7f3e9; /* بيج فاتح */
             --text-color-dark: #2d3748;
             --danger-color: #dc3545;
-            /* 🟢 إصلاح المتغيرات المفقودة */
             --white-color: #ffffff; 
             --muted-color: #4a5568;
         }
@@ -34,7 +33,7 @@
 
         .dashboard-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 900px; /* زيادة عرض اللوحة للجدول */
             margin-top: 50px;
             background: var(--white-color);
             border-radius: 20px;
@@ -108,27 +107,8 @@
         .referral-link-box:hover {
             background: #e6f7ff;
         }
-
-        /* تفاصيل المسوق */
-        .details-card {
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            padding: 20px;
-            background: #fff;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dotted #eee;
-        }
-        .detail-item:last-child {
-            border-bottom: none;
-        }
         
-        /* 🟢 تنسيق الأيقونات الجديدة */
+        /* تنسيق عام للتفاصيل */
         .detail-item i {
             color: var(--primary-color);
             margin-left: 10px;
@@ -139,7 +119,7 @@
             font-weight: 700;
             color: var(--muted-color);
             font-size: 15px;
-            display: flex; /* لتجميع النص مع الأيقونة */
+            display: flex;
             align-items: center;
         }
 
@@ -150,35 +130,6 @@
             text-align: left;
         }
         
-        /* رسائل الحالة والتحميل */
-        #statusMessage {
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-weight: 600;
-            text-align: center;
-        }
-        
-        .loading {
-            background: #e6f7ff;
-            color: #1890ff;
-        }
-
-        .error {
-            background: #f8d7da;
-            color: var(--danger-color);
-        }
-
-        .id-highlight {
-            background-color: var(--secondary-color);
-            padding: 2px 8px;
-            border-radius: 5px;
-            color: var(--primary-color);
-            font-weight: 900;
-            font-size: 1.1em;
-        }
-        
-        /* زر النسخ */
         .copy-btn {
             background: var(--primary-color);
             color: white;
@@ -192,6 +143,100 @@
         }
         .copy-btn:hover {
             background: #1a5c24;
+        }
+        
+        /* تنسيق قائمة المسجلين (الجدول) */
+        .referrals-section {
+            margin-top: 40px;
+        }
+        
+        .referrals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto; /* يجعل الجدول متجاوبًا على الشاشات الصغيرة */
+            background: var(--white-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .referrals-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px; /* الحد الأدنى لعرض الجدول */
+        }
+
+        .referrals-table th, .referrals-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #eee;
+        }
+
+        .referrals-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            position: sticky;
+            top: 0; /* لتثبيت رؤوس الجدول */
+        }
+
+        .referrals-table tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        .referrals-table tr:hover {
+            background-color: #e6f7ff;
+        }
+        
+        .download-btn {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 700;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .download-btn:hover {
+            background: #d4951c;
+        }
+        
+        .status-active { color: #28a745; font-weight: 800; }
+        .status-inactive { color: var(--danger-color); font-weight: 800; }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: var(--muted-color);
+        }
+
+        /* تنسيق خاص لتفاصيل المسوق */
+        .details-card {
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 20px;
+            background: #fff;
+            margin-bottom: 20px;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dotted #eee;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
         }
     </style>
 </head>
@@ -220,10 +265,23 @@
                 <p style="font-size: 12px; color: #555; margin-top: 10px;">انقر على الرابط أو الزر لنسخه ومشاركته.</p>
             </div>
 
-            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;">بيانات التسجيل</h2>
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;">بيانات التسجيل الأساسية</h2>
             <div class="details-card" id="personal-details">
+            </div>
+
+            <div class="referrals-section">
+                <div class="referrals-header">
+                    <h2 style="margin: 0; color: var(--primary-color); font-size: 18px; font-weight: 700;">قائمة المسجّلين عبر الرابط</h2>
+                    <button class="download-btn" id="download-btn" style="display:none;">
+                        <i class="fas fa-download" style="margin-left: 5px; color: var(--primary-color);"></i>
+                        تنزيل كملف CSV
+                    </button>
                 </div>
-            <p style="font-size: 13px; color: var(--danger-color); margin-top: 20px;">*ملاحظة: تُعرض هنا بيانات أول تسجيل لك كمسوِّق فقط.</p>
+
+                <div class="table-container" id="referrals-table-container">
+                    </div>
+            </div>
+            
         </div>
 
     </div>
@@ -231,9 +289,9 @@
 
 <script>
     // 🛑 يجب استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الذي جهزناه
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-mwLP-04tinNnoTirZwEr5u3Ahcvt-yBKPzkkcXNvZqleW14cHw-WCyFVRVsfBzcILw/exec'; 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBhWGdmZLPE26mA1El1gLgZaGjrYJhykHuUc_Gs2IN1tXtbolB89t36LdLoKcg3I1L4g/exec'; 
     
-    // ✅ التعديل النهائي تم هنا: استخدام رابط صفحة التسجيل الصحيح
+    // ✅ تم التثبيت: هذا هو الرابط الأساسي لصفحة تسجيل الطلبة/العملاء
     const BASE_REGISTRATION_URL = 'https://skillia.netlify.app/mt.html'; 
 
     const statusMessage = document.getElementById('statusMessage');
@@ -243,25 +301,33 @@
     const personalDetails = document.getElementById('personal-details');
     const referralLinkText = document.getElementById('referral-link-text');
     const copyBtn = document.getElementById('copy-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const referralsTableContainer = document.getElementById('referrals-table-container');
     const urlParams = new URLSearchParams(window.location.search);
 
-    // 🟢 إضافة الأيقونات لقاموس الترجمة
-    const translations = {
+    // ✅ يبحث الآن عن 'marketer_id' في الرابط
+    const marketerId = urlParams.get('marketer_id'); 
+
+    // ترجمة البيانات الشخصية للمسوق
+    const marketerTranslations = {
         'تاريخ_التسجيل': { label: 'تاريخ التسجيل', icon: 'fas fa-calendar-alt' },
         'marketer_id': { label: 'معرّف المسوّق', icon: 'fas fa-id-badge' },
         'الحالة': { label: 'الحالة', icon: 'fas fa-check-circle' },
         'fullname': { label: 'الاسم الكامل', icon: 'fas fa-user' },
         'gender': { label: 'الجنس', icon: 'fas fa-venus-mars' },
         'country': { label: 'البلد', icon: 'fas fa-globe' },
-        'phone': { label: 'رقم الهاتف', icon: 'fab fa-whatsapp' }, // استخدام أيقونة واتساب
+        'phone': { label: 'رقم الهاتف', icon: 'fab fa-whatsapp' }, 
         'email': { label: 'البريد الإلكتروني', icon: 'fas fa-envelope' }
     };
+    
+    // عناوين الأعمدة للجدول (التي يجب أن يرسلها Apps Script في حقل referrals_list)
+    const referralColumns = ['تاريخ_التسجيل', 'fullname', 'phone', 'email', 'الحالة'];
+    const referralHeaders = ['التاريخ', 'اسم المسجّل', 'الهاتف', 'البريد الإلكتروني', 'حالة التسجيل'];
+
 
     /**
      * @function updateStatus
      * يعرض رسالة حالة للمستخدم.
-     * @param {string} message - الرسالة المراد عرضها.
-     * @param {string} type - نوع الرسالة ('loading', 'error', 'success').
      */
     function updateStatus(message, type = 'loading') {
         statusMessage.textContent = message;
@@ -269,45 +335,107 @@
         statusMessage.style.display = 'block';
         dashboardContent.style.display = 'none';
     }
+    
+    /**
+     * @function getStatusHtml
+     * يترجم قيمة الحالة (Y/N) إلى تنسيق HTML المطلوب.
+     */
+    function getStatusHtml(statusValue) {
+        if (statusValue === 'Y') {
+            return '<span class="status-active">🟢 متصل</span>';
+        } else if (statusValue === 'N') {
+            return '<span class="status-inactive">🔴 غير نشط</span>';
+        }
+        return statusValue || '';
+    }
+    
+    /**
+     * @function buildReferralsTable
+     * يبني جدول HTML لقائمة المسجلين.
+     */
+    function buildReferralsTable(referrals) {
+        if (!referrals || referrals.length === 0) {
+            referralsTableContainer.innerHTML = '<p class="no-data">لم يسجل أي شخص عبر رابطك بعد.</p>';
+            downloadBtn.style.display = 'none';
+            return;
+        }
+
+        downloadBtn.style.display = 'flex'; 
+
+        let tableHtml = '<table class="referrals-table"><thead><tr>';
+        
+        // بناء رأس الجدول
+        referralHeaders.forEach(header => {
+            tableHtml += `<th>${header}</th>`;
+        });
+        tableHtml += '</tr></thead><tbody>';
+
+        // بناء صفوف الجدول
+        referrals.forEach(referral => {
+            tableHtml += '<tr>';
+            referralColumns.forEach(key => {
+                let cellValue = referral[key] || '---';
+                
+                // تنسيق عمود الحالة داخل الجدول
+                if (key === 'الحالة') {
+                    cellValue = getStatusHtml(cellValue);
+                }
+                
+                tableHtml += `<td>${cellValue}</td>`;
+            });
+            tableHtml += '</tr>';
+        });
+
+        tableHtml += '</tbody></table>';
+        referralsTableContainer.innerHTML = tableHtml;
+    }
 
     /**
      * @function displayData
      * يعرض البيانات المسترجعة من Apps Script.
-     * @param {object} data - البيانات المسترجعة.
      */
     function displayData(data) {
         statusMessage.style.display = 'none';
         dashboardContent.style.display = 'block';
 
-        // 1. عرض المعرّف في العنوان
+        // 1. عرض المعرّف
         marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
 
         // 2. عرض عدد الإحالات
         referralsCount.textContent = data.referrals_count || 0;
 
-        // 3. بناء رابط الإحالة وعرضه (سيتم بناء الرابط بالشكل المطلوب: https://skillia.netlify.app/mt.html?marketer_id=...)
+        // 3. بناء رابط الإحالة وعرضه
         const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
         referralLinkText.textContent = fullReferralLink;
         
-        // 4. عرض البيانات الشخصية
+        // 4. عرض البيانات الشخصية (من أول تسجيل)
         personalDetails.innerHTML = '';
         if (data.personal_data && data.personal_data.length > 0) {
-            // نعرض بيانات التسجيل الأول فقط
             const firstEntry = data.personal_data[0]; 
+            const marketerStatus = firstEntry['الحالة']; 
+            const statusHtml = getStatusHtml(marketerStatus);
             
-            // استخدام مفاتيح الترجمة لعرض البيانات بترتيب ثابت
-            Object.keys(translations).forEach(key => {
-                const config = translations[key]; // 🟢 استخدام الكائن الجديد
+            Object.keys(marketerTranslations).forEach(key => {
+                const config = marketerTranslations[key]; 
                 const label = config.label;
                 const icon = config.icon;
                 const value = firstEntry[key] || 'غير متوفر';
+                let displayValue = value;
+
+                // دمج الحالة بجانب الاسم الكامل
+                if (key === 'fullname') {
+                    displayValue = `${value} ${statusHtml}`;
+                } 
+                // تنسيق عرض قيمة عمود الحالة (الحالة)
+                else if (key === 'الحالة') {
+                    displayValue = getStatusHtml(value) || value;
+                }
 
                 const item = document.createElement('div');
                 item.className = 'detail-item';
-                // 🟢 تضمين الأيقونة في الـ detail-label
                 item.innerHTML = `
                     <span class="detail-label"><i class="${icon}"></i>${label}</span>
-                    <span class="detail-value">${value}</span>
+                    <span class="detail-value">${displayValue}</span>
                 `;
                 personalDetails.appendChild(item);
             });
@@ -315,13 +443,55 @@
         } else {
             personalDetails.innerHTML = '<p style="text-align: center; color: var(--danger-color);">❌ لم يتم العثور على بيانات تسجيلك كمسوِّق. تأكد من إرسال بياناتك أولاً.</p>';
         }
+
+        // 5. بناء قائمة المسجلين (قائمة الإحالات)
+        buildReferralsTable(data.referrals_list);
+        
+        // 6. تفعيل زر التنزيل
+        downloadBtn.onclick = () => downloadCSV(data.referrals_list, data.marketer_id);
+    }
+    
+    /**
+     * @function downloadCSV
+     * يقوم بتنزيل البيانات كملف CSV.
+     * @param {array} data - قائمة الكائنات المراد تنزيلها.
+     * @param {string} marketerId - معرّف المسوِّق لاسم الملف.
+     */
+    function downloadCSV(data, marketerId) {
+        if (!data || data.length === 0) return;
+
+        // إنشاء رؤوس الملف (باستخدام العناوين العربية المرئية)
+        let csv = referralHeaders.join(',') + '\n';
+
+        data.forEach(row => {
+            let rowData = referralColumns.map(key => {
+                let value = row[key] || '';
+                // إزالة الفواصل والنصوص التي قد تسبب مشاكل في CSV
+                value = String(value).replace(/"/g, '""');
+                // التفاف القيم التي تحتوي على فواصل بعلامتي اقتباس
+                if (value.includes(',')) {
+                    value = `"${value}"`;
+                }
+                return value;
+            });
+            csv += rowData.join(',') + '\n';
+        });
+
+        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' }); // إضافة UTF-8 BOM لدعم اللغة العربية
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `referrals_${marketerId}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 
 
     /**
      * @function fetchData
      * يجلب البيانات من Apps Script.
-     * @param {string} marketerId - معرف المسوِّق.
      */
     async function fetchData(marketerId) {
         updateStatus('جارٍ جلب الإحصائيات والبيانات...');
@@ -345,17 +515,14 @@
 
     // 🔑 عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', () => {
-        // ✅ تم التعديل: أصبح الكود الآن يبحث عن 'marketer_id'
-const marketerId = urlParams.get('marketer_id'); 
-
         if (marketerId) {
             fetchData(marketerId.toUpperCase());
         } else {
-            updateStatus('⚠️ لا يوجد معرف مسوِّق في الرابط. الرجاء استخدام رابط يحتوي على: ?marketerId=XXXXXX', 'error');
+            updateStatus('⚠️ لا يوجد معرف مسوِّق في الرابط. الرجاء استخدام رابط يحتوي على: ?marketer_id=XXXXXX', 'error');
             marketerIdDisplay.innerHTML = `الرجاء إضافة المعرّف في الرابط.`;
         }
         
-        // 5. معالج حدث النسخ
+        // معالج حدث النسخ
         copyBtn.addEventListener('click', async () => {
             const link = referralLinkText.textContent;
             try {
