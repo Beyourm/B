@@ -231,10 +231,10 @@
 
 <script>
     // 🛑 يجب استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الذي جهزناه
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYN1ugMmzpj-ozZ0cRL2coDrNejEvRYccijox6srUN33R7PUKTGNLt62xzR95CWhOiQw/exec'; 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-mwLP-04tinNnoTirZwEr5u3Ahcvt-yBKPzkkcXNvZqleW14cHw-WCyFVRVsfBzcILw/exec'; 
     
-    // 🛑 يجب استبدال هذا بالرابط الأساسي لصفحة التسجيل (بدون marketer_id)
-    const BASE_REGISTRATION_URL = 'https://sklilia.netlify.app/index'; 
+    // ✅ التعديل النهائي تم هنا: استخدام رابط صفحة التسجيل الصحيح
+    const BASE_REGISTRATION_URL = 'https://skillia.netlify.app/mt.html'; 
 
     const statusMessage = document.getElementById('statusMessage');
     const dashboardContent = document.getElementById('dashboardContent');
@@ -285,7 +285,7 @@
         // 2. عرض عدد الإحالات
         referralsCount.textContent = data.referrals_count || 0;
 
-        // 3. بناء رابط الإحالة وعرضه
+        // 3. بناء رابط الإحالة وعرضه (سيتم بناء الرابط بالشكل المطلوب: https://skillia.netlify.app/mt.html?marketer_id=...)
         const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
         referralLinkText.textContent = fullReferralLink;
         
