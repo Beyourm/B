@@ -289,6 +289,7 @@
 
 <script>
     // 🛑 يجب استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الذي جهزناه
+    // استخدم الرابط الذي قمت بنشره أخيراً
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvxBHCF-1N8Uc8QgnwIecTWhBFztURBjoPtUyq1U30QcepvOsRaVKgBfcm3xlaEZRrfA/exec'; 
     
     // ✅ تم التثبيت: هذا هو الرابط الأساسي لصفحة تسجيل الطلبة/العملاء
@@ -337,9 +338,6 @@
     }
     
     /**
-// ... (بقية الكود)
-
-    /**
      * @function getStatusHtml
      * يترجم قيمة الحالة (Y/N/فارغ) إلى تنسيق HTML المطلوب.
      * @param {string} statusValue - القيمة القادمة من Apps Script (Y أو N أو فارغ).
@@ -348,6 +346,7 @@
     function getStatusHtml(statusValue) {
         const normalizedValue = String(statusValue).trim().toUpperCase();
         
+        // 🔴 تصحيح: إضافة النص مرة أخرى (/غير نشط)
         if (normalizedValue === 'Y') {
             return '<span class="status-active">🟢 </span>';
         } else if (normalizedValue === 'N') {
@@ -356,8 +355,6 @@
         // حالة الفراغ أو أي قيمة غير معروفة (⛔)
         return '<span class="status-inactive" style="color: #ffc107; font-weight: 700;">⛔ </span>';
     }
-
-// ... (بقية الكود)
 
     
     /**
