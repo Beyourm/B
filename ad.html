@@ -265,7 +265,7 @@
                 <p style="font-size: 12px; color: #555; margin-top: 10px;">انقر على الرابط أو الزر لنسخه ومشاركته.</p>
             </div>
 
-            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;">بيانات التسجيل الأساسية</h2>
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;">البيانات الشخصية</h2>
             <div class="details-card" id="personal-details">
             </div>
 
@@ -288,9 +288,8 @@
 </div>
 
 <script>
-    // 🛑 يجب استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الذي جهزناه
-    // استخدم الرابط الذي قمت بنشره أخيراً
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvxBHCF-1N8Uc8QgnwIecTWhBFztURBjoPtUyq1U30QcepvOsRaVKgBfcm3xlaEZRrfA/exec'; 
+    // 🛑 تأكد من استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الجديد
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxb8aURQ9EGpZdMzaC4RMixuf9T_YjGksf4L2W6WW7aSBPyrBz7jiXuRzeY5V7MnqyEqA/exec'; 
     
     // ✅ تم التثبيت: هذا هو الرابط الأساسي لصفحة تسجيل الطلبة/العملاء
     const BASE_REGISTRATION_URL = 'https://skillia.netlify.app/mt.html'; 
@@ -309,11 +308,10 @@
     // ✅ يبحث الآن عن 'marketer_id' في الرابط
     const marketerId = urlParams.get('marketer_id'); 
 
-    // ترجمة البيانات الشخصية للمسوق
+    // ترجمة البيانات الشخصية للمسوق (تم حذف عمود الحالة)
     const marketerTranslations = {
         'تاريخ_التسجيل': { label: 'تاريخ التسجيل', icon: 'fas fa-calendar-alt' },
         'marketer_id': { label: 'معرّف المسوّق', icon: 'fas fa-id-badge' },
-        'الحالة': { label: 'الحالة', icon: 'fas fa-check-circle' },
         'fullname': { label: 'الاسم الكامل', icon: 'fas fa-user' },
         'gender': { label: 'الجنس', icon: 'fas fa-venus-mars' },
         'country': { label: 'البلد', icon: 'fas fa-globe' },
@@ -321,7 +319,7 @@
         'email': { label: 'البريد الإلكتروني', icon: 'fas fa-envelope' }
     };
     
-    // عناوين الأعمدة للجدول (التي يجب أن يرسلها Apps Script في حقل referrals_list)
+    // عناوين الأعمدة للجدول (قائمة الإحالات)
     const referralColumns = ['تاريخ_التسجيل', 'fullname', 'phone', 'email', 'الحالة'];
     const referralHeaders = ['التاريخ', 'اسم المسجّل', 'الهاتف', 'البريد الإلكتروني', 'حالة التسجيل'];
 
@@ -340,13 +338,10 @@
     /**
      * @function getStatusHtml
      * يترجم قيمة الحالة (Y/N/فارغ) إلى تنسيق HTML المطلوب.
-     * @param {string} statusValue - القيمة القادمة من Apps Script (Y أو N أو فارغ).
-     * @returns {string} - تنسيق HTML للحالة.
      */
     function getStatusHtml(statusValue) {
         const normalizedValue = String(statusValue).trim().toUpperCase();
         
-        // 🔴 تصحيح: إضافة النص مرة أخرى (/غير نشط)
         if (normalizedValue === 'Y') {
             return '<span class="status-active">🟢 </span>';
         } else if (normalizedValue === 'N') {
@@ -420,8 +415,6 @@
         personalDetails.innerHTML = '';
         if (data.personal_data && data.personal_data.length > 0) {
             const firstEntry = data.personal_data[0]; 
-            const marketerStatus = firstEntry['الحالة']; 
-            const statusHtml = getStatusHtml(marketerStatus);
             
             Object.keys(marketerTranslations).forEach(key => {
                 const config = marketerTranslations[key]; 
@@ -430,14 +423,7 @@
                 const value = firstEntry[key] || 'غير متوفر';
                 let displayValue = value;
 
-                // دمج الحالة بجانب الاسم الكامل
-                if (key === 'fullname') {
-                    displayValue = `${value} ${statusHtml}`;
-                } 
-                // تنسيق عرض قيمة عمود الحالة (الحالة)
-                else if (key === 'الحالة') {
-                    displayValue = getStatusHtml(value) || value;
-                }
+                // لا يتم عرض الحالة في هذا القسم بعد التعديل
 
                 const item = document.createElement('div');
                 item.className = 'detail-item';
@@ -462,8 +448,6 @@
     /**
      * @function downloadCSV
      * يقوم بتنزيل البيانات كملف CSV.
-     * @param {array} data - قائمة الكائنات المراد تنزيلها.
-     * @param {string} marketerId - معرّف المسوِّق لاسم الملف.
      */
     function downloadCSV(data, marketerId) {
         if (!data || data.length === 0) return;
