@@ -345,7 +345,8 @@
 
     // 🔑 عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', () => {
-        const marketerId = urlParams.get('marketerId');
+        // ✅ تم التعديل: أصبح الكود الآن يبحث عن 'marketer_id'
+const marketerId = urlParams.get('marketer_id'); 
 
         if (marketerId) {
             fetchData(marketerId.toUpperCase());
