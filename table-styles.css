@@ -37,56 +37,48 @@
     cursor: not-allowed;
 }
 
+/* 🛑 الحاوية: تتولى التمرير العمودي وتمنع الـ x */
 .table-container {
     overflow-x: auto; 
+    max-height: 400px; /* الارتفاع الأقصى للتمرير */
+    overflow-y: auto; /* التمرير العمودي الآن هنا */
+    
     background: var(--white-color);
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* ---------------------------------------------------- */
-/* --- أنماط Table Flexbox & Sticky Headers --- */
+/* --- أنماط Table Sticky Headers (المُعدَّلة) --- */
 /* ---------------------------------------------------- */
 
 .referrals-table {
     width: 100%;
     border-collapse: collapse;
-    display: block; 
+    /* ✅ العودة لـ display: table لضمان محاذاة الأعمدة */
+    display: table; 
 }
 
-.referrals-table thead {
-    display: block; 
-    width: 100%;
-}
-
+/* ✅ إزالة display: block من thead و tbody والعودة للسلوك الطبيعي */
+.referrals-table thead, 
 .referrals-table tbody {
-    display: block;
-    max-height: 400px; /* تحديد ارتفاع لإظهار شريط التمرير العمودي */
-    overflow-y: auto; 
-    overflow-x: hidden; 
-    width: 100%;
+    display: table-row-group; 
 }
 
-/* نطبق Flexbox الآن على كل صف (سواء رأس أو جسم) لكي تتوزع خلايا الصف أفقياً */
+/* ✅ إزالة display: flex من tr والعودة لـ display: table-row */
 .referrals-table thead tr, 
 .referrals-table tbody tr {
-    display: flex;
-    width: 100%; 
-    flex-wrap: nowrap; 
+    display: table-row; 
 }
 
 .referrals-table th, .referrals-table td {
     padding: 12px 15px;
     text-align: right;
     border-bottom: 1px solid #eee;
-
-    /* التوزيع المرن */
-    flex-grow: 1; 
-    flex-basis: 0; 
-    min-width: 100px; 
+    /* ✅ لا نحتاج لخصائص flex هنا */
 }
 
-/* تنسيق رؤوس الجدول (Sticky) */
+/* 🛑 تثبيت الرأس مباشرة على TH */
 .referrals-table th {
     background-color: var(--primary-color);
     color: white;
@@ -94,7 +86,7 @@
     font-size: 14px;
     cursor: pointer;
     
-    /* التثبيت: تطبيق الخصائص على رأس العمود */
+    /* ✅ التثبيت: تطبيق الخصائص على رأس العمود */
     position: sticky;
     top: 0; 
     z-index: 10; 
@@ -102,11 +94,10 @@
     white-space: nowrap;
     transition: background-color 0.2s; 
     
-    display: flex;
+    /* استخدام display: flex داخلياً فقط لترتيب النص وأيقونة الفرز */
+    display: flex; 
     justify-content: space-between; 
     align-items: center;
-    
-    flex-shrink: 0; /* منع انكماش الرأس */
 }
 
 .referrals-table th:hover {
@@ -146,6 +137,7 @@
 .referrals-table tr.status-N { background-color: var(--status-n-bg); }
 .referrals-table tr.status-pending { background-color: var(--status-pending-bg); }
 
+/* تنسيقات زر التنزيل ورسالة لا توجد بيانات */
 .download-btn {
     background: var(--secondary-color);
     color: var(--primary-color);
