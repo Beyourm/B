@@ -4,7 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>لوحة تحكم المسوِّق</title>
-    
+
+    <meta property="og:title" content="لوحة تحكم المسوِّق - مؤسسة كن أنت" />
+    <meta property="og:description" content="إحصائيات إحالاتك الحالية:" /> 
+    <meta property="og:image" content="https://skillia.netlify.app/images/photo.jpg" />
+    <meta property="og:url" content="https://sklilia.netlify.app/Trainees_Records" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_AR" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../assets/fonts/tajawal.css">
 
@@ -394,6 +400,31 @@
     }
 
     /**
+     * @function updateMetaTags
+     * 🌟 الدالة الجديدة: لتحديث وسوم الـ Open Graph (OG) باسم المسوق
+     */
+    function updateMetaTags(data) {
+        if (data.personal_data && data.personal_data.length > 0) {
+            const marketerName = data.personal_data[0].fullname || 'مسوِّق برامجنا';
+            const descriptionTag = document.querySelector('meta[property="og:description"]');
+            const titleTag = document.querySelector('meta[property="og:title"]');
+            
+            if (descriptionTag) {
+                // تعيين الوصف ليكون اسم المسوق
+                descriptionTag.setAttribute('content', `أهلاً بك في لوحة تحكم المسوِّق: ${marketerName}`);
+            }
+            if (titleTag) {
+                // تعديل عنوان الصفحة الأساسي
+                titleTag.setAttribute('content', `لوحة تحكم المسوِّق: ${marketerName}`);
+            }
+            
+            // تحديث عنوان الصفحة في المتصفح
+            document.title = `لوحة تحكم: ${marketerName}`;
+        }
+    }
+
+
+    /**
      * @function displayData
      * يعرض البيانات المسترجعة من Apps Script.
      */
@@ -401,17 +432,20 @@
         statusMessage.style.display = 'none';
         dashboardContent.style.display = 'block';
 
-        // 1. عرض المعرّف
+        // 1. تحديث وسوم META Tags باسم المسوق
+        updateMetaTags(data);
+        
+        // 2. عرض المعرّف
         marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
 
-        // 2. عرض عدد الإحالات
+        // 3. عرض عدد الإحالات
         referralsCount.textContent = data.referrals_count || 0;
 
-        // 3. بناء رابط الإحالة وعرضه
+        // 4. بناء رابط الإحالة وعرضه
         const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
         referralLinkText.textContent = fullReferralLink;
         
-        // 4. عرض البيانات الشخصية (من أول تسجيل)
+        // 5. عرض البيانات الشخصية (من أول تسجيل)
         personalDetails.innerHTML = '';
         if (data.personal_data && data.personal_data.length > 0) {
             const firstEntry = data.personal_data[0]; 
@@ -422,8 +456,6 @@
                 const icon = config.icon;
                 const value = firstEntry[key] || 'غير متوفر';
                 let displayValue = value;
-
-                // لا يتم عرض الحالة في هذا القسم بعد التعديل
 
                 const item = document.createElement('div');
                 item.className = 'detail-item';
@@ -438,10 +470,10 @@
             personalDetails.innerHTML = '<p style="text-align: center; color: var(--danger-color);">❌ لم يتم العثور على بيانات تسجيلك كمسوِّق. تأكد من إرسال بياناتك أولاً.</p>';
         }
 
-        // 5. بناء قائمة المسجلين (قائمة الإحالات)
+        // 6. بناء قائمة المسجلين (قائمة الإحالات)
         buildReferralsTable(data.referrals_list);
         
-        // 6. تفعيل زر التنزيل
+        // 7. تفعيل زر التنزيل
         downloadBtn.onclick = () => downloadCSV(data.referrals_list, data.marketer_id);
     }
     
@@ -531,4 +563,3 @@
 
 </body>
 </html>
-
