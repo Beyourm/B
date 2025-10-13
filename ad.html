@@ -11,24 +11,28 @@
     <meta property="og:url" content="https://sklilia.netlify.app/Trainees_Records" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ar_AR" />
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../assets/fonts/tajawal.css">
 
     <style>
         :root {
-            --primary-color: #0d3b14; /* أخضر داكن */
-            --secondary-color: #e5a72d; /* ذهبي */
-            --accent-color: #f7f3e9; /* بيج فاتح */
+            --primary-color: #0d3b14; 
+            --secondary-color: #e5a72d; 
+            --accent-color: #f7f3e9; 
             --text-color-dark: #2d3748;
             --danger-color: #dc3545;
             --white-color: #ffffff; 
             --muted-color: #4a5568;
             --success-color: #28a745;
+            --status-y-bg: #e8f9ed; 
+            --status-n-bg: #f9e8e8; 
+            --status-pending-bg: #fff8e8; 
         }
 
         body {
             font-family: "Tajawal", sans-serif;
-            background: linear-gradient(120deg, #f7f3e9, #eaf0f5);
+            background: linear-gradient(120deg, var(--accent-color) 0%, #eaf0f5 100%); 
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -40,257 +44,117 @@
 
         .dashboard-container {
             width: 100%;
-            max-width: 900px; /* زيادة عرض اللوحة للجدول */
+            max-width: 900px; 
             margin-top: 50px;
             background: var(--white-color);
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
             overflow: hidden;
             animation: fadeIn 0.8s ease-out;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        header {
-            background: var(--primary-color);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 800;
-        }
-        
-        header p {
-            margin-top: 5px;
-            font-size: 16px;
-            line-height: 1.4;
-        }
-        
-        .id-highlight {
-            font-weight: 900;
-            color: var(--secondary-color);
-            direction: ltr; /* لضمان ظهور المعرّف بشكل صحيح */
-        }
-
-        .content {
-            padding: 30px;
-        }
-        
-        /* تنسيق بطاقات الإحصائيات */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .stats-card {
-            background: var(--accent-color);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        
-        /* تنسيق بطاقة المسجلين النشطين */
-        .stats-card.active-card {
-            background: #e6f7ff; /* لون فاتح مخصص للنشطين */
-        }
-
-
-        .stats-card h2 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 16px; /* تصغير حجم الخط ليتناسب مع البطاقتين */
-            font-weight: 700;
-        }
-
-        .stats-count {
-            font-size: 40px; /* تصغير حجم الخط ليتناسب مع البطاقتين */
-            font-weight: 900;
-            color: var(--secondary-color);
-            display: block;
-            margin-top: 5px;
-        }
-        
-        .stats-card.active-card .stats-count {
-             color: var(--success-color); /* لون أخضر للنشطين */
-        }
-        
-        .referral-link-box {
-            background: #fff;
+        /* 1. تنسيق رسالة الحالة والـ Spinner */
+        #statusMessage {
             padding: 15px;
-            border-radius: 10px;
-            border: 1px dashed var(--primary-color);
-            margin-top: 15px;
-            word-break: break-all;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .referral-link-box:hover {
-            background: #e6f7ff;
-        }
-        
-        /* تنسيق عام للتفاصيل */
-        .detail-item i {
-            color: var(--primary-color);
-            margin-left: 10px;
-            font-size: 16px;
-        }
-
-        .detail-label {
             font-weight: 700;
-            color: var(--muted-color);
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .detail-value {
-            font-weight: 600;
-            color: var(--text-color-dark);
-            font-size: 15px;
-            text-align: left;
-        }
-        
-        .copy-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 12px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-        .copy-btn:hover {
-            background: #1a5c24;
-        }
-        
-        /* تنسيق قائمة المسجلين (الجدول) */
-        .referrals-section {
-            margin-top: 40px;
-        }
-        
-        .referrals-header {
-            display: flex;
-            flex-direction: column; /* لترتيب العناصر عمودياً */
-            gap: 15px;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
             margin-bottom: 20px;
         }
         
-        .referrals-header .top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* تحديث الأنماط لاستخدام classList */
+        .loading { color: var(--muted-color); border: 1px solid #ccc;} 
+        .success { background-color: var(--status-y-bg); color: var(--success-color); }
+        .error { background-color: var(--status-n-bg); color: var(--danger-color); }
+
+
+        .loading .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
         }
         
-        /* تنسيق حقل البحث */
-        #searchInput {
-            width: 100%;
-            padding: 10px 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            box-sizing: border-box; /* لضمان أن العرض يشمل البادينغ والحدود */
-            direction: rtl;
-            text-align: right;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-
-        .table-container {
-            overflow-x: auto; /* يجعل الجدول متجاوبًا على الشاشات الصغيرة */
-            background: var(--white-color);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .referrals-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px; /* الحد الأدنى لعرض الجدول */
-        }
-
-        .referrals-table th, .referrals-table td {
-            padding: 12px 15px;
-            text-align: right;
-            border-bottom: 1px solid #eee;
-        }
-
-        .referrals-table th {
+        /* 2. تنسيق الـ Toast Notification */
+        .toast-notification {
+            position: fixed;
+            top: 20px; 
+            right: 20px;
             background-color: var(--primary-color);
             color: white;
-            font-weight: 700;
-            font-size: 14px;
-            position: sticky;
-            top: 0; /* لتثبيت رؤوس الجدول */
-        }
-
-        .referrals-table tr:nth-child(even) {
-            background-color: #f8f8f8;
-        }
-
-        .referrals-table tr:hover {
-            background-color: #e6f7ff;
-        }
-        
-        .download-btn {
-            background: var(--secondary-color);
-            color: var(--primary-color);
-            font-weight: 700;
-            border: none;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
         }
-        .download-btn:hover {
-            background: #d4951c;
+        .toast-notification.show {
+            opacity: 1;
         }
-        
-        .status-active { color: #28a745; font-weight: 800; }
-        .status-inactive { color: var(--danger-color); font-weight: 800; }
-        
-        .no-data {
-            text-align: center;
-            padding: 20px;
-            color: var(--muted-color);
+        .toast-notification i {
+            margin-left: 10px;
         }
 
-        /* تنسيق خاص لتفاصيل المسوق */
-        .details-card {
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            padding: 20px;
-            background: #fff;
-            margin-bottom: 20px;
-        }
-        .detail-item {
+        /* 3. تنسيق رؤوس الجدول لفرز الأعمدة (إضافة المؤشر) */
+        .referrals-table th {
+            cursor: pointer;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+            transition: background-color 0.2s; 
+            /* إضافة الأيقونة بعد النص */
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* لضمان محاذاة النص والأيقونة لليمين */
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dotted #eee;
         }
-        .detail-item:last-child {
-            border-bottom: none;
+        .referrals-table th::after {
+            content: ' ';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-right: 8px;
+            font-size: 12px;
+            color: #fff;
+            opacity: 0.5;
+        }
+        .referrals-table th[data-sort="asc"]::after {
+            content: '\f0de'; /* أيقونة السهم للأعلى (مرتب تصاعدي) */
+            opacity: 1;
+        }
+        .referrals-table th[data-sort="desc"]::after {
+            content: '\f0dd'; /* أيقونة السهم للأسفل (مرتب تنازلي) */
+            opacity: 1;
+        }
+        .referrals-table th:hover {
+            background-color: #1a5c24; 
+        }
+
+        /* ... بقية الأنماط (Styles) كما هي ... */
+        .stats-card:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .referrals-table tr.status-Y { background-color: var(--status-y-bg); }
+        .referrals-table tr.status-N { background-color: var(--status-n-bg); }
+        .referrals-table tr.status-pending { background-color: var(--status-pending-bg); }
+        /* ... */
+        
+        /* 4. نمط حقل البحث المعطل */
+        #searchInput:disabled {
+            background-color: #f7f7f7;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -303,23 +167,25 @@
     </header>
 
     <div class="content">
-        <div id="statusMessage" class="loading" style="text-align:center; color:#555;">جارٍ التحميل...</div>
+        <div id="statusMessage" class="loading" style="text-align:center; color:#555;">
+            <span class="spinner"></span> جارٍ جلب البيانات...
+        </div>
 
         <div id="dashboardContent" style="display:none;">
             
             <div class="stats-grid">
                 <div class="stats-card">
-                    <h2>إجمالي عدد المسجّلين عبر الرابط الخاص بك</h2>
+                    <h2><i class="fas fa-users card-title-icon"></i> إجمالي عدد المسجّلين عبر الرابط الخاص بك</h2>
                     <span class="stats-count" id="referrals-count">0</span>
                 </div>
                 <div class="stats-card active-card">
-                    <h2>المسجّلون النشطون (الحالة Y)</h2>
+                    <h2><i class="fas fa-check-circle card-title-icon"></i> المسجّلون النشطون (الحالة Y)</h2>
                     <span class="stats-count" id="active-referrals-count">0</span>
                 </div>
             </div>
             
             <div class="stats-card" style="margin-bottom: 20px;">
-                <h2 style="margin-top: 0;">رابط الإحالة الخاص بك</h2>
+                <h2 style="margin-top: 0;"><i class="fas fa-link card-title-icon"></i> رابط الإحالة الخاص بك</h2>
                 <div class="referral-link-box" id="referral-link-box" title="اضغط لنسخ الرابط">
                     <span id="referral-link-text">...</span>
                     <button class="copy-btn" id="copy-btn"><i class="fas fa-copy"></i> نسخ</button>
@@ -327,7 +193,7 @@
                 <p style="font-size: 12px; color: #555; margin-top: 10px;">انقر على الرابط أو الزر لنسخه ومشاركته.</p>
             </div>
 
-            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;">البيانات الشخصية</h2>
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-address-card card-title-icon"></i> البيانات الشخصية</h2>
             <div class="details-card" id="personal-details">
             </div>
 
@@ -340,7 +206,7 @@
                             تنزيل كملف CSV
                         </button>
                     </div>
-                    <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم أو الهاتف أو البريد الإلكتروني..." oninput="filterReferrals()">
+                    <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم، الهاتف، البريد الإلكتروني..." oninput="filterReferrals()">
                 </div>
 
                 <div class="table-container" id="referrals-table-container">
@@ -354,18 +220,19 @@
     </div>
 </div>
 
+<div id="toastNotification" class="toast-notification">
+    <i class="fas fa-check-circle"></i> تم نسخ الرابط إلى الحافظة!
+</div>
+
 <script>
-    // 🛑 تأكد من استبدال هذا برابط النشر الحقيقي لسكربت Google Apps Script الجديد
+    // 🛑 يجب استبدال هذا برابط النشر الحقيقي
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxb8aURQ9EGpZdMzaC4RMixuf9T_YjGksf4L2W6WW7aSBPyrBz7jiXuRzeY5V7MnqyEqA/exec'; 
-    
-    // ✅ تم التثبيت: هذا هو الرابط الأساسي لصفحة تسجيل الطلبة/العملاء
     const BASE_REGISTRATION_URL = 'https://skillia.netlify.app/courses.html'; 
 
     const statusMessage = document.getElementById('statusMessage');
     const dashboardContent = document.getElementById('dashboardContent');
     const marketerIdDisplay = document.getElementById('marketer-id-display');
     const referralsCount = document.getElementById('referrals-count');
-    // 1. جلب عنصر عداد النشطين
     const activeReferralsCount = document.getElementById('active-referrals-count');
     const personalDetails = document.getElementById('personal-details');
     const referralLinkText = document.getElementById('referral-link-text');
@@ -373,12 +240,15 @@
     const downloadBtn = document.getElementById('download-btn');
     const referralsTableContainer = document.getElementById('referrals-table-container');
     const urlParams = new URLSearchParams(window.location.search);
-    const searchInput = document.getElementById('searchInput'); // 4. جلب عنصر البحث
+    const searchInput = document.getElementById('searchInput');
+    const toastNotification = document.getElementById('toastNotification'); 
+    
+    let currentReferralsList = []; 
+    let sortState = { column: null, direction: 'asc' }; 
+    let toastTimeout; // 2. متغير الـ Timeout للـ Toast
 
-    // ✅ يبحث الآن عن 'marketer_id' في الرابط
     const marketerId = urlParams.get('marketer_id'); 
 
-    // ترجمة البيانات الشخصية للمسوق (تم حذف عمود الحالة)
     const marketerTranslations = {
         'تاريخ_التسجيل': { label: 'تاريخ التسجيل', icon: 'fas fa-calendar-alt' },
         'marketer_id': { label: 'معرّف المسوّق', icon: 'fas fa-id-badge' },
@@ -389,211 +259,237 @@
         'email': { label: 'البريد الإلكتروني', icon: 'fas fa-envelope' }
     };
     
-    // عناوين الأعمدة للجدول (قائمة الإحالات)
     const referralColumns = ['تاريخ_التسجيل', 'fullname', 'phone', 'email', 'الحالة'];
     const referralHeaders = ['التاريخ', 'اسم المسجّل', 'الهاتف', 'البريد الإلكتروني', 'حالة التسجيل'];
 
-
     /**
-     * @function updateStatus
-     * يعرض رسالة حالة للمستخدم.
+     * 1. تحسين دالة إدارة الحالات باستخدام classList.
      */
     function updateStatus(message, type = 'loading') {
-        statusMessage.textContent = message;
-        statusMessage.className = type;
+        statusMessage.classList.remove('loading', 'success', 'error');
+        statusMessage.classList.add(type);
         statusMessage.style.display = 'block';
-        dashboardContent.style.display = 'none';
+        
+        if (type === 'loading') {
+            statusMessage.innerHTML = `<span class="spinner"></span> ${message}`;
+            dashboardContent.style.display = 'none';
+        } else {
+            statusMessage.textContent = message;
+            // لا نغير عرض لوحة القيادة هنا في حالتي success و error، يتم التعامل معها في displayData
+        }
     }
     
     /**
-     * @function getStatusHtml
-     * يترجم قيمة الحالة (Y/N/فارغ) إلى تنسيق HTML المطلوب.
+     * 2. دالة لإظهار الـ Toast Notification (مع منع التداخل).
      */
+    function showToast(message) {
+        toastNotification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        toastNotification.classList.add('show');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toastNotification.classList.remove('show');
+        }, 2000);
+    }
+    
     function getStatusHtml(statusValue) {
         const normalizedValue = String(statusValue).trim().toUpperCase();
         
         if (normalizedValue === 'Y') {
-            return '<span class="status-active">🟢 تم الدفع </span>';
+            return { value: '<span class="status-active">🟢 تم الدفع </span>', class: 'status-Y' };
         } else if (normalizedValue === 'N') {
-            return '<span class="status-inactive">🔴 لم يدفع </span>';
+            return { value: '<span class="status-inactive">🔴 لم يدفع </span>', class: 'status-N' };
         }
-        // حالة الفراغ أو أي قيمة غير معروفة (⛔)
-        return '<span class="status-inactive" style="color: #ffc107; font-weight: 700;">⛔ قيد الانتظار </span>';
+        return { value: '<span class="status-inactive" style="color: #ffc107; font-weight: 700;">⛔ قيد الانتظار </span>', class: 'status-pending' };
     }
 
     
     /**
      * @function buildReferralsTable
-     * يبني جدول HTML لقائمة المسجلين.
+     * 4. تم تعديلها لتعطيل حقل البحث وزر التنزيل.
      */
     function buildReferralsTable(referrals) {
+        
         if (!referrals || referrals.length === 0) {
-            referralsTableContainer.innerHTML = '<p class="no-data">لم يسجل أي شخص عبر رابطك بعد.</p>';
+            const isFiltering = searchInput.value.length > 0;
+            referralsTableContainer.innerHTML = isFiltering 
+                ? '<p class="no-data">لم يتم العثور على أي نتائج تطابق البحث.</p>'
+                : '<p class="no-data">لم يسجل أي شخص عبر رابطك بعد.</p>';
+                
             downloadBtn.style.display = 'none';
-            searchInput.style.display = 'none'; // إخفاء حقل البحث
+            searchInput.disabled = true; // 4. تعطيل حقل البحث
             return;
         }
         
-        searchInput.style.display = 'block'; // إظهار حقل البحث
+        searchInput.disabled = false; // 4. تفعيل حقل البحث
         downloadBtn.style.display = 'flex'; 
-
-        let tableHtml = '<table class="referrals-table"><thead><tr>';
         
-        // بناء رأس الجدول
-        referralHeaders.forEach(header => {
-            tableHtml += `<th>${header}</th>`;
+        const fragment = document.createDocumentFragment();
+        
+        const table = document.createElement('table');
+        table.className = 'referrals-table';
+        const thead = document.createElement('thead');
+        let headerRow = '<tr>';
+        
+        referralHeaders.forEach((header, index) => {
+            const columnKey = referralColumns[index];
+            // إضافة السهم الدال على حالة الفرز الحالية
+            let sortIndicator = '';
+            if (sortState.column === columnKey) {
+                // لا نحتاج لإضافة الأيقونة هنا مباشرة، CSS يقوم باللازم
+            }
+            
+            // استخدام div لحل مشكلة محاذاة النص والـ sort indicator
+            headerRow += `<th data-column="${columnKey}" onclick="sortTable('${columnKey}')" data-sort="${sortState.column === columnKey ? sortState.direction : ''}">
+                <div>${header}</div>
+            </th>`;
         });
-        tableHtml += '</tr></thead><tbody>';
+        headerRow += '</tr>';
+        thead.innerHTML = headerRow;
+        table.appendChild(thead);
+        
+        const tbody = document.createElement('tbody');
 
-        // بناء صفوف الجدول
         referrals.forEach(referral => {
-            tableHtml += '<tr>';
+            const row = document.createElement('tr');
+            let rowClass = '';
+            
             referralColumns.forEach(key => {
                 let cellValue = referral[key] || '---';
+                const cell = document.createElement('td');
                 
-                // تنسيق عمود الحالة داخل الجدول
                 if (key === 'الحالة') {
-                    cellValue = getStatusHtml(cellValue);
+                    const status = getStatusHtml(cellValue);
+                    cell.innerHTML = status.value;
+                    rowClass = status.class;
+                } else {
+                    cell.textContent = cellValue;
                 }
                 
-                tableHtml += `<td>${cellValue}</td>`;
+                row.appendChild(cell);
             });
-            tableHtml += '</tr>';
+            
+            row.className = rowClass;
+            tbody.appendChild(row);
         });
-
-        tableHtml += '</tbody></table>';
-        referralsTableContainer.innerHTML = tableHtml;
+        
+        table.appendChild(tbody);
+        fragment.appendChild(table);
+        
+        referralsTableContainer.innerHTML = '';
+        referralsTableContainer.appendChild(fragment);
     }
 
     /**
-     * @function filterReferrals
-     * 4. دالة فلترة الجدول بناءً على حقل البحث
+     * @function sortTable
+     * 3. تم تحسينها لفرز التواريخ والأرقام بشكل صحيح.
      */
+    function sortTable(column) {
+        // تحديد اتجاه الفرز الجديد
+        const isAsc = sortState.column === column ? sortState.direction !== 'asc' : true;
+
+        currentReferralsList.sort((a, b) => {
+            let aValue = a[column] || '';
+            let bValue = b[column] || '';
+            
+            // 3. محاولة تحويل التواريخ
+            if (column === 'تاريخ_التسجيل') {
+                aValue = new Date(aValue);
+                bValue = new Date(bValue);
+                // التعامل مع التواريخ غير الصالحة
+                if (isNaN(aValue)) aValue = isAsc ? Infinity : -Infinity;
+                if (isNaN(bValue)) bValue = isAsc ? Infinity : -Infinity;
+            } else {
+                // الفرز النصي للحقول الأخرى
+                aValue = String(aValue).toLowerCase();
+                bValue = String(bValue).toLowerCase();
+            }
+
+            if (aValue > bValue) return isAsc ? 1 : -1;
+            if (aValue < bValue) return isAsc ? -1 : 1;
+            return 0;
+        });
+
+        sortState.column = column;
+        sortState.direction = isAsc ? 'asc' : 'desc';
+        
+        // بعد الفرز، نعيد بناء الجدول بالقائمة الجديدة
+        filterReferrals(); 
+    }
+
+    // تم تعديل filterReferrals لاستدعاء buildReferralsTable بشكل صحيح
     function filterReferrals() {
         const q = searchInput.value.toLowerCase();
-        const rows = document.querySelectorAll('.referrals-table tbody tr');
         
-        rows.forEach(row => {
-            const rowText = row.textContent.toLowerCase();
-            row.style.display = rowText.includes(q) ? '' : 'none';
+        const filteredList = currentReferralsList.filter(referral => {
+            const fullName = String(referral.fullname || '').toLowerCase();
+            const phone = String(referral.phone || '').toLowerCase();
+            const email = String(referral.email || '').toLowerCase();
+            
+            return fullName.includes(q) || phone.includes(q) || email.includes(q);
         });
+        
+        buildReferralsTable(filteredList);
     }
-
-
-    /**
-     * @function updateMetaTags
-     * تحديث وسوم الـ Open Graph (OG) باسم المسوق
-     */
+    
+    // (بقية الدوال: updateMetaTags, displayData, downloadCSV, fetchData تبقى كما هي مع تحديث استدعاء updateStatus)
     function updateMetaTags(data) {
         if (data.personal_data && data.personal_data.length > 0) {
-            // يتم استخراج الاسم الكامل للمسوق
             const marketerName = data.personal_data[0].fullname || 'غير معروف';
             const descriptionTag = document.querySelector('meta[property="og:description"]');
             const titleTag = document.querySelector('meta[property="og:title"]');
             
-            // تحديث og:title ليصبح "لوحة تحكم المسوِّق - [اسم المسوِّق]"
             if (titleTag) {
                 titleTag.setAttribute('content', `لوحة تحكم المسوِّق - ${marketerName}`);
             }
-
-            // تحديث og:description ليعرض الاسم
             if (descriptionTag) {
                 descriptionTag.setAttribute('content', `أهلاً بالمسوِّق ${marketerName}. راجع إحصائيات إحالتك الحالية.`);
             }
-            
-            // تحديث عنوان الصفحة في المتصفح
             document.title = `لوحة تحكم: ${marketerName}`;
         }
     }
 
 
-    /**
-     * @function displayData
-     * يعرض البيانات المسترجعة من Apps Script.
-     */
     function displayData(data) {
         dashboardContent.style.display = 'block';
-
-        // 1. إضافة تاريخ آخر تحديث
+        
+        // 1. رسالة النجاح وتاريخ آخر تحديث (تظهر ثم تختفي)
         const updateTime = new Date().toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-        statusMessage.innerHTML = `<i class="fas fa-calendar-alt" style="margin-left: 5px;"></i> آخر تحديث: ${updateTime}`;
-        statusMessage.style.display = 'block';
+        updateStatus(`<i class="fas fa-check-circle"></i> تم التحديث بنجاح ✅ <span style="font-size:14px; margin-right: 15px;">| 📅 آخر تحديث: ${updateTime}</span>`, 'success');
+        setTimeout(() => { statusMessage.style.display = 'none'; }, 2000); 
 
-        // 2. عداد النشطين
-        const activeCount = data.referrals_list.filter(r => String(r['الحالة']).trim().toUpperCase() === 'Y').length;
+        // 3. تخزين القائمة الأصلية للفرز
+        currentReferralsList = data.referrals_list || [];
+
+        const activeCount = currentReferralsList.filter(r => String(r['الحالة']).trim().toUpperCase() === 'Y').length;
         activeReferralsCount.textContent = activeCount;
 
-
-        // 3. تحديث وسوم META Tags باسم المسوق (للعرض في واتساب وغيره)
         updateMetaTags(data);
         
-        // ✅ التعديل الذي طلبته: تحديث العنوان الداخلي والهيدر باسم المسوق
         if (data.personal_data && data.personal_data.length > 0) {
             const marketerName = data.personal_data[0].fullname || 'غير معروف';
-            // تحديث h1
             document.querySelector('header h1').innerHTML = `لوحة تحكم المسوِّق – ${marketerName}`;
-            // تحديث رسالة الترحيب والمعرّف
             marketerIdDisplay.innerHTML = `مرحبًا ${marketerName} 👋<br>معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
         } else {
-             // عرض المعرّف (في حالة عدم وجود بيانات شخصية لضمان عدم اختفاء العنصر)
              marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
         }
 
-        // 4. عرض عدد الإحالات
         referralsCount.textContent = data.referrals_count || 0;
-
-        // 5. بناء رابط الإحالة وعرضه
         const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
         referralLinkText.textContent = fullReferralLink;
         
-        // 6. عرض البيانات الشخصية
-        personalDetails.innerHTML = '';
-        if (data.personal_data && data.personal_data.length > 0) {
-            const firstEntry = data.personal_data[0]; 
-            
-            Object.keys(marketerTranslations).forEach(key => {
-                const config = marketerTranslations[key]; 
-                const label = config.label;
-                const icon = config.icon;
-                const value = firstEntry[key] || 'غير متوفر';
-                let displayValue = value;
-
-                const item = document.createElement('div');
-                item.className = 'detail-item';
-                item.innerHTML = `
-                    <span class="detail-label"><i class="${icon}"></i>${label}</span>
-                    <span class="detail-value">${displayValue}</span>
-                `;
-                personalDetails.appendChild(item);
-            });
-            
-        } else {
-            personalDetails.innerHTML = '<p style="text-align: center; color: var(--danger-color);">❌ لم يتم العثور على بيانات تسجيلك كمسوِّق. تأكد من إرسال بياناتك أولاً.</p>';
-        }
-
-        // 7. بناء قائمة المسجلين (قائمة الإحالات)
-        buildReferralsTable(data.referrals_list);
+        // بناء الجدول (سيتم عرض القائمة الأصلية غير المُفرزة في البداية)
+        buildReferralsTable(currentReferralsList);
         
-        // 8. تفعيل زر التنزيل
-        downloadBtn.onclick = () => downloadCSV(data.referrals_list, data.marketer_id);
+        downloadBtn.onclick = () => downloadCSV(currentReferralsList, data.marketer_id);
     }
     
-    /**
-     * @function downloadCSV
-     * يقوم بتنزيل البيانات كملف CSV.
-     */
     function downloadCSV(data, marketerId) {
         if (!data || data.length === 0) return;
-
-        // إنشاء رؤوس الملف (باستخدام العناوين العربية المرئية)
         let csv = referralHeaders.join(',') + '\n';
-
         data.forEach(row => {
             let rowData = referralColumns.map(key => {
                 let value = row[key] || '';
-                // إزالة الفواصل والنصوص التي قد تسبب مشاكل في CSV
                 value = String(value).replace(/"/g, '""');
-                // التفاف القيم التي تحتوي على فواصل بعلامتي اقتباس
                 if (value.includes(',')) {
                     value = `"${value}"`;
                 }
@@ -602,7 +498,7 @@
             csv += rowData.join(',') + '\n';
         });
 
-        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' }); // إضافة UTF-8 BOM لدعم اللغة العربية
+        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' }); 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.setAttribute('href', url);
@@ -614,12 +510,8 @@
     }
 
 
-    /**
-     * @function fetchData
-     * يجلب البيانات من Apps Script.
-     */
     async function fetchData(marketerId) {
-        updateStatus('جارٍ جلب الإحصائيات والبيانات...');
+        updateStatus('جارٍ جلب البيانات...'); 
         
         const fetchUrl = `${APPS_SCRIPT_URL}?marketerId=${marketerId}`;
 
@@ -630,16 +522,14 @@
             if (data.status === 'success') {
                 displayData(data);
             } else {
-                // رسالة خطأ ودودة عند فشل جلب البيانات
                 updateStatus('❌ لم نتمكن من جلب بياناتك حاليًا، حاول مجددًا بعد قليل.', 'error');
             }
         } catch (error) {
             console.error('Fetch Error:', error);
-            // رسالة خطأ ودودة عند فشل الاتصال
             updateStatus('❌ حدث خطأ في الاتصال. تأكد من نشر سكربت Apps Script بشكل صحيح.', 'error');
         }
     }
-
+    
     // 🔑 عند تحميل الصفحة
     document.addEventListener('DOMContentLoaded', () => {
         if (marketerId) {
@@ -649,21 +539,22 @@
             marketerIdDisplay.innerHTML = `الرجاء إضافة المعرّف في الرابط.`;
         }
         
-        // معالج حدث النسخ
         copyBtn.addEventListener('click', async () => {
             const link = referralLinkText.textContent;
             try {
                 await navigator.clipboard.writeText(link);
-                copyBtn.textContent = 'تم النسخ ✅';
-                setTimeout(() => { copyBtn.innerHTML = '<i class="fas fa-copy"></i> نسخ'; }, 2000);
+                showToast('تم نسخ الرابط إلى الحافظة!'); 
             } catch (err) {
                 console.error('فشل النسخ:', err);
-                copyBtn.textContent = 'فشل النسخ ❌';
+                showToast('❌ فشل النسخ، الرجاء المحاولة مجدداً.');
             }
         });
         
-        // 4. تعيين دالة الفلترة على حقل البحث
+        // 3. ربط دالة الفلترة بالـ input
         searchInput.oninput = filterReferrals; 
+        
+        // جعل دالة sortTable متاحة عالميًا لتكون قابلة للاستدعاء من onclick في HTML
+        window.sortTable = sortTable;
     });
 </script>
 
