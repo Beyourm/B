@@ -287,18 +287,25 @@
 
         .referrals-table tbody {
             display: block;
-            max-height: 400px; /* تحديد ارتفاع لإظهار شريط التمرير العمودي */
+            max-height: 400px; 
             overflow-y: auto; 
             overflow-x: hidden; 
             width: 100%;
         }
         
         /* 🌟🌟 نطبق Flexbox الآن على كل صف (سواء رأس أو جسم) لكي تتوزع خلايا الصف أفقياً */
-        .referrals-table thead tr, 
-        .referrals-table tbody tr {
+        .referrals-table thead tr {
             display: flex;
             width: 100%; 
             flex-wrap: nowrap; 
+            /* 🚀 الجديد: تطبيق نفس لون خلفية الـ th على الصف الرأسي بالكامل */
+            background-color: var(--primary-color); 
+        }
+        
+        .referrals-table tbody tr {
+            display: flex;
+            width: 100%; 
+            flex-wrap: nowrap;
         }
 
         .referrals-table th, .referrals-table td {
@@ -314,7 +321,6 @@
 
         /* 3. تنسيق رؤوس الجدول لفرز الأعمدة */
         .referrals-table th {
-            background-color: var(--primary-color);
             color: white;
             font-weight: 700;
             font-size: 14px;
@@ -323,7 +329,10 @@
             /* 🌟 التثبيت: تطبيق الخصائص على رأس العمود */
             position: sticky;
             top: 0; 
-            z-index: 10; /* لضمان ظهوره فوق الصفوف الأخرى أثناء التمرير */
+            z-index: 10; 
+            
+            /* 🛑 تم إزالة الخلفية من الـ TH نفسه، ونقلها إلى الـ TR */
+            background-color: transparent; 
             
             white-space: nowrap;
             transition: background-color 0.2s; 
@@ -337,6 +346,7 @@
         }
         
         .referrals-table th:hover {
+            /* 🚀 تطبيق اللون الداكن عند المرور بالفأرة */
             background-color: #1a5c24; 
         }
 
