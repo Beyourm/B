@@ -14,28 +14,32 @@ const activeReferralsCount = document.getElementById('active-referrals-count');
 const referralLinkText = document.getElementById('referral-link-text');
 const copyBtn = document.getElementById('copy-btn');
 const downloadBtn = document.getElementById('download-btn');
-const referralsTableContainer = document.getElementById('referrals-table-container');
+const referralsTableContainer = document.getElementById('referrals-table-container'); // أصبح حاوية البطاقات
 const urlParams = new URLSearchParams(window.location.search);
 const searchInput = document.getElementById('searchInput');
 const toastNotification = document.getElementById('toastNotification'); 
 
 let currentReferralsList = []; 
-let sortState = { column: null, direction: 'asc' }; 
 let toastTimeout; 
 
 const marketerId = urlParams.get('marketer_id'); 
 
+// الأعمدة التي نحتاجها لعرض البطاقة
 const referralColumns = ['تاريخ_التسجيل', 'fullname', 'phone', 'email', 'الحالة'];
 const referralHeaders = ['التاريخ', 'اسم المسجّل', 'الهاتف', 'البريد الإلكتروني', 'حالة التسجيل'];
+
+// 🚀 تعريف أسماء الحقول لعرضها داخل البطاقات
+const cardFields = [
+    { key: 'تاريخ_التسجيل', label: 'التاريخ', icon: 'fas fa-calendar-alt' },
+    { key: 'phone', label: 'الهاتف', icon: 'fab fa-whatsapp' },
+    { key: 'email', label: 'البريد', icon: 'fas fa-envelope' },
+];
 
 
 // ----------------------------------------------------
 // --- دوال المساعدة العامة ---
 // ----------------------------------------------------
 
-/**
- * دالة إدارة رسائل الحالة.
- */
 function updateStatus(message, type = 'loading') {
     statusMessage.classList.remove('loading', 'success', 'error');
     statusMessage.classList.add(type);
@@ -49,9 +53,6 @@ function updateStatus(message, type = 'loading') {
     }
 }
 
-/**
- * دالة لإظهار الـ Toast Notification.
- */
 function showToast(message) {
     toastNotification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
     toastNotification.classList.add('show');
@@ -68,16 +69,13 @@ function getStatusHtml(statusValue) {
     const normalizedValue = String(statusValue).trim().toUpperCase();
     
     if (normalizedValue === 'Y') {
-        return { value: '<span class="status-active">🟢 تم الدفع </span>', class: 'status-Y' };
+        return { name: 'تم الدفع', value: '<span class="card-status status-active">🟢 تم الدفع </span>', class: 'status-Y' };
     } else if (normalizedValue === 'N') {
-        return { value: '<span class="status-inactive">🔴 لم يدفع </span>', class: 'status-N' };
+        return { name: 'لم يدفع', value: '<span class="card-status status-inactive">🔴 لم يدفع </span>', class: 'status-N' };
     }
-    return { value: '<span class="status-inactive" style="color: #ffc107; font-weight: 700;">⛔ قيد الانتظار </span>', class: 'status-pending' };
+    return { name: 'قيد الانتظار', value: '<span class="card-status" style="color: #ffc107;">⛔ قيد الانتظار </span>', class: 'status-pending' };
 }
 
-/**
- * دالة تحديث علامات الميتا.
- */
 function updateMetaTags(data) {
     if (data.personal_data && data.personal_data.length > 0) {
         const marketerName = data.personal_data[0].fullname || 'غير معروف';
@@ -96,13 +94,13 @@ function updateMetaTags(data) {
 
 
 // ----------------------------------------------------
-// --- دوال الجدول والبيانات ---
+// --- دوال عرض البطاقات والبيانات ---
 // ----------------------------------------------------
 
 /**
- * دالة بناء جدول المسجّلين.
+ * 🚀 دالة بناء البطاقات بدلاً من الجدول.
  */
-function buildReferralsTable(referrals) {
+function buildReferralsCards(referrals) {
     
     if (!referrals || referrals.length === 0) {
         const isFiltering = searchInput.value.length > 0;
@@ -118,94 +116,43 @@ function buildReferralsTable(referrals) {
     searchInput.disabled = false; 
     downloadBtn.style.display = 'flex'; 
     
-    const fragment = document.createDocumentFragment();
-    
-    const table = document.createElement('table');
-    table.className = 'referrals-table';
-    const thead = document.createElement('thead');
-    let headerRow = '<tr>';
-    
-    referralHeaders.forEach((header, index) => {
-        const columnKey = referralColumns[index];
-        
-        headerRow += `<th data-column="${columnKey}" onclick="sortTable('${columnKey}')" data-sort="${sortState.column === columnKey ? sortState.direction : ''}">
-            ${header} 
-        </th>`;
-    });
-    headerRow += '</tr>';
-    thead.innerHTML = headerRow;
-    table.appendChild(thead);
-    
-    const tbody = document.createElement('tbody');
+    let htmlContent = '';
 
     referrals.forEach(referral => {
-        const row = document.createElement('tr');
-        let rowClass = '';
+        const status = getStatusHtml(referral['الحالة']);
         
-        referralColumns.forEach(key => {
-            let cellValue = referral[key] || '---';
-            const cell = document.createElement('td');
+        let detailsHtml = cardFields.map(field => {
+            const value = referral[field.key] || '---';
+            const direction = field.key === 'phone' || field.key === 'email' ? 'ltr' : 'rtl';
             
-            if (key === 'الحالة') {
-                const status = getStatusHtml(cellValue);
-                cell.innerHTML = status.value;
-                rowClass = status.class;
-            } else {
-                cell.textContent = cellValue;
-            }
-            
-            row.appendChild(cell);
-        });
+            return `
+                <p>
+                    <i class="${field.icon}"></i>
+                    <span class="label">${field.label}:</span>
+                    <span class="value" style="direction:${direction};">${value}</span>
+                </p>`;
+        }).join('');
         
-        row.className = rowClass;
-        tbody.appendChild(row);
+        htmlContent += `
+            <div class="referral-card ${status.class}">
+                <div class="card-header">
+                    <h3 class="card-name">${referral.fullname || 'اسم غير متوفر'}</h3>
+                    ${status.value}
+                </div>
+                <div class="card-details">
+                    ${detailsHtml}
+                </div>
+            </div>
+        `;
     });
     
-    table.appendChild(tbody);
-    fragment.appendChild(table);
-    
-    referralsTableContainer.innerHTML = '';
-    referralsTableContainer.appendChild(fragment);
+    referralsTableContainer.innerHTML = htmlContent;
 }
 
-/**
- * دالة فرز الجدول.
- */
-function sortTable(column) {
-    
-    const isAsc = sortState.column === column ? sortState.direction !== 'asc' : true;
-
-    currentReferralsList.sort((a, b) => {
-        let aValue = a[column] || '';
-        let bValue = b[column] || '';
-        
-        // محاولة تحويل التواريخ للفرز
-        if (column === 'تاريخ_التسجيل') {
-            aValue = new Date(aValue);
-            bValue = new Date(bValue);
-            
-            // التعامل مع التواريخ غير الصالحة
-            if (isNaN(aValue)) aValue = isAsc ? Infinity : -Infinity;
-            if (isNaN(bValue)) bValue = isAsc ? Infinity : -Infinity;
-        } else {
-            aValue = String(aValue).toLowerCase();
-            bValue = String(bValue).toLowerCase();
-        }
-
-        if (aValue > bValue) return isAsc ? 1 : -1;
-        if (aValue < bValue) return isAsc ? -1 : 1;
-        return 0;
-    });
-
-    sortState.column = column;
-    sortState.direction = isAsc ? 'asc' : 'desc';
-    
-    // بعد الفرز، نعيد بناء الجدول بالقائمة الجديدة
-    filterReferrals(); 
-}
 
 /**
- * دالة فلترة / بحث الجدول.
+ * دالة فلترة / بحث البطاقات.
+ * (المنطق هو نفسه، فقط نستخدم دالة buildReferralsCards)
  */
 function filterReferrals() {
     const q = searchInput.value.toLowerCase();
@@ -218,11 +165,11 @@ function filterReferrals() {
         return fullName.includes(q) || phone.includes(q) || email.includes(q);
     });
     
-    buildReferralsTable(filteredList);
+    buildReferralsCards(filteredList);
 }
 
 /**
- * دالة تنزيل CSV.
+ * دالة تنزيل CSV. (لا تتغير)
  */
 function downloadCSV(data, marketerId) {
     if (!data || data.length === 0) return;
@@ -251,10 +198,6 @@ function downloadCSV(data, marketerId) {
 }
 
 
-// ----------------------------------------------------
-// --- دوال جلب وعرض البيانات ---
-// ----------------------------------------------------
-
 function displayData(data) {
     dashboardContent.style.display = 'block';
     
@@ -281,8 +224,8 @@ function displayData(data) {
     const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
     referralLinkText.textContent = fullReferralLink;
     
-    // بناء الجدول
-    buildReferralsTable(currentReferralsList);
+    // بناء البطاقات
+    buildReferralsCards(currentReferralsList);
     
     downloadBtn.onclick = () => downloadCSV(currentReferralsList, data.marketer_id);
 }
@@ -315,8 +258,7 @@ async function fetchData(marketerId) {
 // ----------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
-    // إتاحة الدوال للوصول إليها عبر HTML (مثل onclick="sortTable(...)")
-    window.sortTable = sortTable;
+    // إتاحة الدوال للوصول إليها عبر HTML (مثل oninput="filterReferrals()")
     window.filterReferrals = filterReferrals;
 
     if (marketerId) {
