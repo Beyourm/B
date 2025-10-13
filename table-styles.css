@@ -160,5 +160,54 @@
 .no-data {
     text-align: center;
     padding: 20px;
+
     color: var(--muted-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ✅ إصلاح نهائي لمشكلة الفراغ الأبيض في منتصف الجدول */
+
+/* 1️⃣ تأكد أن الرأس يمتد على كامل العرض */
+.referrals-table thead {
+  background-color: var(--primary-color);
+  display: table-header-group; /* يحافظ على عرض الأعمدة */
+  z-index: 5;
+}
+
+/* 2️⃣ تأكد أن الصفوف تأخذ نفس العرض وأن الظلال لا تنفصل */
+.referrals-table tbody {
+  display: table-row-group;
+  position: relative;
+  z-index: 1;
+}
+
+/* 3️⃣ إصلاح الخلفية البيضاء أسفل الرأس أثناء التمرير */
+.referrals-table th {
+  background-clip: padding-box; /* يمنع انفصال الخلفية */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* يعطي تدرج لطيف بين الرأس والجسم */
+}
+
+/* 4️⃣ أضف خلفية بلون الجدول لتغطي أي فجوات */
+.table-container {
+  background-color: var(--white-color);
+  position: relative;
+}
+
+/* 5️⃣ لمنع التقطّع في المنتصف عند التمرير */
+.referrals-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  table-layout: fixed; /* يضمن اتساق عرض الأعمدة */
 }
