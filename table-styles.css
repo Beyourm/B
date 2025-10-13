@@ -163,3 +163,17 @@
   padding: 20px;
   color: var(--muted-color);
 }
+
+
+
+
+/* ✅ إصلاح اتجاه رؤوس الأعمدة ليكون أفقيًا وليس عموديًا */
+.referrals-table th {
+  display: flex !important;
+  flex-direction: row !important; /* 👈 يجعل النص والأيقونة جنب بعض */
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+}
+
+
