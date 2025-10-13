@@ -1,0 +1,172 @@
+/* ---------------------------------------------------- */
+/* --- تنسيقات منطقة الجدول والبحث والتنزيل --- */
+/* ---------------------------------------------------- */
+
+.referrals-section {
+    margin-top: 40px;
+}
+
+.referrals-header {
+    display: flex;
+    flex-direction: column; 
+    gap: 15px;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.referrals-header .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    box-sizing: border-box; 
+    direction: rtl;
+    text-align: right;
+}
+
+#searchInput:disabled {
+    background-color: #f7f7f7;
+    cursor: not-allowed;
+}
+
+.table-container {
+    overflow-x: auto; 
+    background: var(--white-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ---------------------------------------------------- */
+/* --- أنماط Table Flexbox & Sticky Headers --- */
+/* ---------------------------------------------------- */
+
+.referrals-table {
+    width: 100%;
+    border-collapse: collapse;
+    display: block; 
+}
+
+.referrals-table thead {
+    display: block; 
+    width: 100%;
+}
+
+.referrals-table tbody {
+    display: block;
+    max-height: 400px; /* تحديد ارتفاع لإظهار شريط التمرير العمودي */
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    width: 100%;
+}
+
+/* نطبق Flexbox الآن على كل صف (سواء رأس أو جسم) لكي تتوزع خلايا الصف أفقياً */
+.referrals-table thead tr, 
+.referrals-table tbody tr {
+    display: flex;
+    width: 100%; 
+    flex-wrap: nowrap; 
+}
+
+.referrals-table th, .referrals-table td {
+    padding: 12px 15px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+
+    /* التوزيع المرن */
+    flex-grow: 1; 
+    flex-basis: 0; 
+    min-width: 100px; 
+}
+
+/* تنسيق رؤوس الجدول (Sticky) */
+.referrals-table th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    
+    /* التثبيت: تطبيق الخصائص على رأس العمود */
+    position: sticky;
+    top: 0; 
+    z-index: 10; 
+    
+    white-space: nowrap;
+    transition: background-color 0.2s; 
+    
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    
+    flex-shrink: 0; /* منع انكماش الرأس */
+}
+
+.referrals-table th:hover {
+    background-color: #1a5c24; 
+}
+
+/* تنسيق أيقونات الفرز */
+.referrals-table th::after {
+    content: ' ';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 12px;
+    color: #fff;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+.referrals-table th[data-sort="asc"]::after {
+    content: '\f0de'; 
+    opacity: 1;
+}
+.referrals-table th[data-sort="desc"]::after {
+    content: '\f0dd'; 
+    opacity: 1;
+}
+
+/* تنسيقات الصفوف */
+.referrals-table tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+.referrals-table tr:hover {
+    background-color: #e6f7ff;
+}
+
+/* تظليل الصفوف حسب الحالة */
+.referrals-table tr.status-Y { background-color: var(--status-y-bg); }
+.referrals-table tr.status-N { background-color: var(--status-n-bg); }
+.referrals-table tr.status-pending { background-color: var(--status-pending-bg); }
+
+.download-btn {
+    background: var(--secondary-color);
+    color: var(--primary-color);
+    font-weight: 700;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+}
+.download-btn:hover {
+    background: #d4951c;
+}
+
+.status-active { color: #28a745; font-weight: 800; }
+.status-inactive { color: var(--danger-color); font-weight: 800; }
+
+.no-data {
+    text-align: center;
+    padding: 20px;
+    color: var(--muted-color);
+}
