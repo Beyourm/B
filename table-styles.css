@@ -211,3 +211,47 @@
   width: 100%;
   table-layout: fixed; /* يضمن اتساق عرض الأعمدة */
 }
+
+
+
+
+
+
+/* ✅ إصلاح عدم اصطفاف الأعمدة وظهور الأعمدة البيضاء */
+
+/* 1️⃣ تأكد أن الجدول يعتمد عرض ثابت للأعمدة */
+.referrals-table {
+  width: 100%;
+  table-layout: fixed; /* 👈 أهم سطر لحل المشكلة */
+  border-collapse: collapse;
+}
+
+/* 2️⃣ اجعل كل خلية تقطع النص الطويل ولا توسع العمود */
+.referrals-table th,
+.referrals-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 3️⃣ خلفية مضمونة لكل خلية لمنع ظهور اللون الأبيض */
+.referrals-table td {
+  background-color: #fff; /* أو var(--white-color) */
+}
+
+/* 4️⃣ تباعد واضح بين الأعمدة لمنع الالتصاق */
+.referrals-table td,
+.referrals-table th {
+  padding: 12px 10px;
+}
+
+/* 5️⃣ تعديل اختياري لعرض الأعمدة (إن أردت ضبطها يدويًا) */
+.referrals-table th:nth-child(1),
+.referrals-table td:nth-child(1) { width: 150px; } /* الاسم */
+.referrals-table th:nth-child(2),
+.referrals-table td:nth-child(2) { width: 120px; } /* الهاتف */
+.referrals-table th:nth-child(3),
+.referrals-table td:nth-child(3) { width: 220px; } /* البريد */
+.referrals-table th:nth-child(4),
+.referrals-table td:nth-child(4) { width: 120px; } /* الحالة */
+
