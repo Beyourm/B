@@ -277,16 +277,14 @@
             border-collapse: collapse;
         }
 
-        /* 🌟🌟 التعديل الحاسم: جعل كل صف يظهر بمرونة وأفقياً */
-        .referrals-table thead, .referrals-table tbody, .referrals-table tr {
+        /* 🌟🌟 الحل: تطبيق Flexbox فقط على صف رأس الجدول لجعله أفقياً */
+        .referrals-table thead tr {
             display: flex;
-            width: 100%;
+            width: 100%; 
         }
-        /* 🌟🌟 منع التفاف الصفوف */
-        .referrals-table tbody tr {
-            flex-wrap: nowrap;
-        }
-        
+
+        /* 🛑🛑 إزالة display: flex من tbody و tr للسماح للصفوف بالظهور عمودياً */
+
         .referrals-table th, .referrals-table td {
             padding: 12px 15px;
             text-align: right;
