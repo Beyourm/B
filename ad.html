@@ -277,6 +277,12 @@
             border-collapse: collapse;
             min-width: 600px; 
         }
+        
+        /* 🌟 التأكد من عرض رؤوس الأعمدة أفقياً */
+        .referrals-table thead tr {
+            display: flex;
+            width: 100%; 
+        }
 
         .referrals-table th, .referrals-table td {
             padding: 12px 15px;
@@ -300,6 +306,10 @@
             display: flex;
             justify-content: space-between; /* دفع النص والأيقونة للطرفين */
             align-items: center;
+            
+            /* 🌟 التعديل الجديد لضمان عدم الالتفاف على الجوال */
+            flex-shrink: 0; 
+            min-width: 100px; 
         }
         
         .referrals-table th:hover {
@@ -574,7 +584,7 @@
         referralHeaders.forEach((header, index) => {
             const columnKey = referralColumns[index];
             
-            // 🌟 إزالة الـ <div> واستخدام النص مباشرةً، ليتم تنسيقه بـ Flexbox داخل الـ <th>
+            // تم إزالة الـ <div> واستخدام النص مباشرةً، ليتم تنسيقه بـ Flexbox داخل الـ <th>
             headerRow += `<th data-column="${columnKey}" onclick="sortTable('${columnKey}')" data-sort="${sortState.column === columnKey ? sortState.direction : ''}">
                 ${header} 
             </th>`;
