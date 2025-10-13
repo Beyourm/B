@@ -293,12 +293,11 @@
             width: 100%;
         }
         
-        /* 🌟🌟 نطبق Flexbox الآن على كل صف (سواء رأس أو جسم) لكي تتوزع خلايا الصف أفقياً */
+        /* 🚀 التعديل الأهم هنا: ضمان أن كل صف (رأس وجسم) مرن (Flex) ويملأ 100% من عرض الحاوية */
         .referrals-table thead tr {
             display: flex;
             width: 100%; 
             flex-wrap: nowrap; 
-            /* 🚀 الجديد: تطبيق نفس لون خلفية الـ th على الصف الرأسي بالكامل */
             background-color: var(--primary-color); 
         }
         
@@ -313,7 +312,7 @@
             text-align: right;
             border-bottom: 1px solid #eee;
 
-            /* 🌟 الثبات: توزيع المساحة بالتساوي ومنع الانهيار */
+            /* 🌟 الأساس: توزيع المساحة بالتساوي */
             flex-grow: 1; 
             flex-basis: 0; 
             min-width: 100px; 
@@ -326,23 +325,25 @@
             font-size: 14px;
             cursor: pointer;
             
-            /* 🌟 التثبيت: تطبيق الخصائص على رأس العمود */
             position: sticky;
             top: 0; 
             z-index: 10; 
             
-            /* 🛑 تم إزالة الخلفية من الـ TH نفسه، ونقلها إلى الـ TR */
+            /* تم إزالة الخلفية من الـ TH نفسه، ونقلها إلى الـ TR */
             background-color: transparent; 
             
             white-space: nowrap;
             transition: background-color 0.2s; 
             
-            /* لضمان محاذاة النص والفرز */
             display: flex;
             justify-content: space-between; 
             align-items: center;
             
+            /* 🛑 التأكد من أن الرؤوس لا تنكمش */
             flex-shrink: 0; 
+            
+            /* 🚀 الجديد: تطبيق نفس عرض خلايا الجسم تماماً */
+            width: 100%; 
         }
         
         .referrals-table th:hover {
@@ -737,102 +738,4 @@
         currentReferralsList = data.referrals_list || [];
 
         const activeCount = currentReferralsList.filter(r => String(r['الحالة']).trim().toUpperCase() === 'Y').length;
-        activeReferralsCount.textContent = activeCount;
-
-        updateMetaTags(data);
-        
-        if (data.personal_data && data.personal_data.length > 0) {
-            const marketerName = data.personal_data[0].fullname || 'غير معروف';
-            document.querySelector('header h1').innerHTML = `لوحة تحكم المسوِّق – ${marketerName}`;
-            marketerIdDisplay.innerHTML = `مرحبًا ${marketerName} 👋<br>معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
-        } else {
-             marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
-        }
-
-        referralsCount.textContent = data.referrals_count || 0;
-        const fullReferralLink = `${BASE_REGISTRATION_URL}?marketer_id=${data.marketer_id}`;
-        referralLinkText.textContent = fullReferralLink;
-        
-        // بناء الجدول (سيتم عرض القائمة الأصلية غير المُفرزة في البداية)
-        buildReferralsTable(currentReferralsList);
-        
-        downloadBtn.onclick = () => downloadCSV(currentReferralsList, data.marketer_id);
-    }
-    
-    function downloadCSV(data, marketerId) {
-        if (!data || data.length === 0) return;
-        let csv = referralHeaders.join(',') + '\n';
-        data.forEach(row => {
-            let rowData = referralColumns.map(key => {
-                let value = row[key] || '';
-                value = String(value).replace(/"/g, '""');
-                if (value.includes(',')) {
-                    value = `"${value}"`;
-                }
-                return value;
-            });
-            csv += rowData.join(',') + '\n';
-        });
-
-        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' }); 
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `referrals_${marketerId}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-
-    async function fetchData(marketerId) {
-        updateStatus('جارٍ جلب البيانات...'); 
-        
-        const fetchUrl = `${APPS_SCRIPT_URL}?marketerId=${marketerId}`;
-
-        try {
-            const response = await fetch(fetchUrl);
-            const data = await response.json();
-
-            if (data.status === 'success') {
-                displayData(data);
-            } else {
-                // عرض رسالة خطأ واضحة
-                const errorMsg = data.message || 'لم نتمكن من جلب بياناتك. تأكد من صحة المعرف وحالة النشر.';
-                updateStatus(`❌ ${errorMsg}`, 'error');
-            }
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            updateStatus('❌ حدث خطأ في الاتصال بالشبكة أو الخادم. الرجاء المحاولة مجدداً.', 'error');
-        }
-    }
-    
-    // 🔑 عند تحميل الصفحة
-    document.addEventListener('DOMContentLoaded', () => {
-        if (marketerId) {
-            fetchData(marketerId.toUpperCase());
-        } else {
-            updateStatus('⚠️ لا يوجد معرف مسوِّق في الرابط. الرجاء استخدام رابط يحتوي على: ?marketer_id=XXXXXX', 'error');
-            marketerIdDisplay.innerHTML = `الرجاء إضافة المعرّف في الرابط.`;
-        }
-        
-        copyBtn.addEventListener('click', async () => {
-            const link = referralLinkText.textContent;
-            try {
-                await navigator.clipboard.writeText(link);
-                showToast('تم نسخ الرابط إلى الحافظة!'); 
-            } catch (err) {
-                console.error('فشل النسخ:', err);
-                showToast('❌ فشل النسخ، الرجاء المحاولة مجدداً.');
-            }
-        });
-        
-        searchInput.oninput = filterReferrals; 
-        
-        window.sortTable = sortTable;
-    });
-</script>
-
-</body>
-</html>
+        active
