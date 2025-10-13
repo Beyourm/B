@@ -275,28 +275,38 @@
         .referrals-table {
             width: 100%;
             border-collapse: collapse;
+            /* 🌟🌟 الجديد: جعل الجدول ككتلة لتمكين التمرير والتطبيق المرن */
+            display: block; 
         }
 
-        /* 🌟🌟 الحل: تطبيق Flexbox فقط على صف رأس الجدول لجعله أفقياً */
-        .referrals-table thead tr {
+        /* 🌟🌟 الحل: نجعل جسم الجدول يظهر ككتلة ليحتوي الصفوف عمودياً */
+        .referrals-table tbody {
+            display: block;
+            /* تحديد ارتفاع لإظهار شريط التمرير الأفقي عند الحاجة */
+            max-height: 400px; /* يمكن تعديله حسب الحاجة */
+            overflow-y: auto; 
+            overflow-x: hidden; 
+        }
+        
+        /* 🌟🌟 تطبيق Flexbox على كل صف لكي تتوزع خلايا الصف أفقياً */
+        .referrals-table thead, .referrals-table tbody tr {
             display: flex;
             width: 100%; 
+            flex-wrap: nowrap; /* منع الالتفاف الأفقي للخلايا */
         }
-
-        /* 🛑🛑 إزالة display: flex من tbody و tr للسماح للصفوف بالظهور عمودياً */
 
         .referrals-table th, .referrals-table td {
             padding: 12px 15px;
             text-align: right;
             border-bottom: 1px solid #eee;
 
-            /* 🌟 الخصائص الجديدة: توزيع المساحة بالتساوي ومنع الانهيار */
+            /* 🌟 الثبات: توزيع المساحة بالتساوي ومنع الانهيار */
             flex-grow: 1; 
             flex-basis: 0; 
             min-width: 100px; 
         }
 
-        /* 3. تنسيق رؤوس الجدول لفرز الأعمدة (تمت إزالة الفراغ) */
+        /* 3. تنسيق رؤوس الجدول لفرز الأعمدة */
         .referrals-table th {
             background-color: var(--primary-color);
             color: white;
@@ -480,7 +490,7 @@
 </div>
 
 <script>
-    // 🛑 يجب استبدال هذا برابط النشر الحقيقي
+    // 🛑 تم تحديث الرابط بناءً على طلبك
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbYeuziWHe6ODINemry6n3XNfXTpDrZ2jxo1GXG9bAjm6AAhiCyogt3p1Y48qvJ1kppQ/exec'; 
     const BASE_REGISTRATION_URL = 'https://skillia.netlify.app/courses.html'; 
 
@@ -767,11 +777,13 @@
             if (data.status === 'success') {
                 displayData(data);
             } else {
-                updateStatus('❌ لم نتمكن من جلب بياناتك حاليًا، حاول مجددًا بعد قليل.', 'error');
+                // عرض رسالة خطأ واضحة
+                const errorMsg = data.message || 'لم نتمكن من جلب بياناتك. تأكد من صحة المعرف وحالة النشر.';
+                updateStatus(`❌ ${errorMsg}`, 'error');
             }
         } catch (error) {
             console.error('Fetch Error:', error);
-            updateStatus('❌ حدث خطأ في الاتصال. تأكد من نشر سكربت Apps Script بشكل صحيح.', 'error');
+            updateStatus('❌ حدث خطأ في الاتصال بالشبكة أو الخادم. الرجاء المحاولة مجدداً.', 'error');
         }
     }
     
