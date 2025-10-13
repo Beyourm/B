@@ -6,9 +6,7 @@
     <title>لوحة تحكم المسوِّق</title> 
 
     <meta property="og:title" content="لوحة تحكم المسوِّق" /> 
-    
     <meta property="og:description" content="راجع إحصائيات إحالتك عبر الرابط الخاص بك." /> 
-    
     <meta property="og:image" content="https://skillia.netlify.app/images/photo.jpg" />
     <meta property="og:url" content="https://sklilia.netlify.app/Trainees_Records" />
     <meta property="og:type" content="website" />
@@ -403,7 +401,7 @@
 
     /**
      * @function updateMetaTags
-     * 🌟 تم التعديل هنا لتحديث og:title
+     * 🌟 تم التعديل هنا لتحديث og:title ليعرض "لوحة تحكم المسوِّق - [اسم المسوِّق]"
      */
     function updateMetaTags(data) {
         if (data.personal_data && data.personal_data.length > 0) {
@@ -412,7 +410,7 @@
             const descriptionTag = document.querySelector('meta[property="og:description"]');
             const titleTag = document.querySelector('meta[property="og:title"]');
             
-            // ✅ التعديل الرئيسي: تحديث og:title ليعرض "لوحة تحكم المسوِّق - [اسم المسوِّق]"
+            // ✅ التعديل الرئيسي: تحديث og:title ليصبح "لوحة تحكم المسوِّق - [اسم المسوِّق]"
             if (titleTag) {
                 titleTag.setAttribute('content', `لوحة تحكم المسوِّق - ${marketerName}`);
             }
@@ -436,7 +434,7 @@
         statusMessage.style.display = 'none';
         dashboardContent.style.display = 'block';
 
-        // 1. تحديث وسوم META Tags باسم المسوق
+        // 1. تحديث وسوم META Tags باسم المسوق (للعرض في واتساب وغيره)
         updateMetaTags(data);
         
         // 2. عرض المعرّف
