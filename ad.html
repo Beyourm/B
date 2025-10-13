@@ -67,12 +67,24 @@
             font-size: 24px;
             font-weight: 800;
         }
+        
+        header p {
+            margin-top: 5px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
+        .id-highlight {
+            font-weight: 900;
+            color: var(--secondary-color);
+            direction: ltr; /* لضمان ظهور المعرّف بشكل صحيح */
+        }
 
         .content {
             padding: 30px;
         }
         
-        /* تنسيق بطاقات الإحصائيات (جديد: دعم عرض البطاقتين) */
+        /* تنسيق بطاقات الإحصائيات */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -502,21 +514,30 @@
     function displayData(data) {
         dashboardContent.style.display = 'block';
 
-        // 5. إضافة تاريخ آخر تحديث
+        // 1. إضافة تاريخ آخر تحديث
         const updateTime = new Date().toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
         statusMessage.innerHTML = `<i class="fas fa-calendar-alt" style="margin-left: 5px;"></i> آخر تحديث: ${updateTime}`;
         statusMessage.style.display = 'block';
 
-        // 1. عداد النشطين
+        // 2. عداد النشطين
         const activeCount = data.referrals_list.filter(r => String(r['الحالة']).trim().toUpperCase() === 'Y').length;
         activeReferralsCount.textContent = activeCount;
 
 
-        // 2. تحديث وسوم META Tags باسم المسوق
+        // 3. تحديث وسوم META Tags باسم المسوق (للعرض في واتساب وغيره)
         updateMetaTags(data);
         
-        // 3. عرض المعرّف
-        marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
+        // ✅ التعديل الذي طلبته: تحديث العنوان الداخلي والهيدر باسم المسوق
+        if (data.personal_data && data.personal_data.length > 0) {
+            const marketerName = data.personal_data[0].fullname || 'غير معروف';
+            // تحديث h1
+            document.querySelector('header h1').innerHTML = `لوحة تحكم المسوِّق – ${marketerName}`;
+            // تحديث رسالة الترحيب والمعرّف
+            marketerIdDisplay.innerHTML = `مرحبًا ${marketerName} 👋<br>معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
+        } else {
+             // عرض المعرّف (في حالة عدم وجود بيانات شخصية لضمان عدم اختفاء العنصر)
+             marketerIdDisplay.innerHTML = `معرّفك: <span class="id-highlight">${data.marketer_id}</span>`;
+        }
 
         // 4. عرض عدد الإحالات
         referralsCount.textContent = data.referrals_count || 0;
@@ -609,12 +630,12 @@
             if (data.status === 'success') {
                 displayData(data);
             } else {
-                // 2. رسالة خطأ ودودة عند فشل جلب البيانات
+                // رسالة خطأ ودودة عند فشل جلب البيانات
                 updateStatus('❌ لم نتمكن من جلب بياناتك حاليًا، حاول مجددًا بعد قليل.', 'error');
             }
         } catch (error) {
             console.error('Fetch Error:', error);
-            // 2. رسالة خطأ ودودة عند فشل الاتصال
+            // رسالة خطأ ودودة عند فشل الاتصال
             updateStatus('❌ حدث خطأ في الاتصال. تأكد من نشر سكربت Apps Script بشكل صحيح.', 'error');
         }
     }
@@ -640,6 +661,9 @@
                 copyBtn.textContent = 'فشل النسخ ❌';
             }
         });
+        
+        // 4. تعيين دالة الفلترة على حقل البحث
+        searchInput.oninput = filterReferrals; 
     });
 </script>
 
