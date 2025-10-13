@@ -3,284 +3,163 @@
 /* ---------------------------------------------------- */
 
 .referrals-section {
-    margin-top: 40px;
+  margin-top: 40px;
 }
 
 .referrals-header {
-    display: flex;
-    flex-direction: column; 
-    gap: 15px;
-    border-bottom: 2px solid var(--secondary-color);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .referrals-header .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #searchInput {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
-    box-sizing: border-box; 
-    direction: rtl;
-    text-align: right;
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  direction: rtl;
+  text-align: right;
 }
 
 #searchInput:disabled {
-    background-color: #f7f7f7;
-    cursor: not-allowed;
+  background-color: #f7f7f7;
+  cursor: not-allowed;
 }
 
-/* 🛑 الحاوية: تتولى التمرير العمودي وتمنع الـ x */
+/* ---------------------------------------------------- */
+/* --- الحاوية الرئيسية للجدول --- */
+/* ---------------------------------------------------- */
 .table-container {
-    overflow-x: auto; 
-    max-height: 400px; /* الارتفاع الأقصى للتمرير */
-    overflow-y: auto; /* التمرير العمودي الآن هنا */
-    
-    background: var(--white-color);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 /* ---------------------------------------------------- */
-/* --- أنماط Table Sticky Headers (المُعدَّلة) --- */
+/* --- الجدول العام --- */
 /* ---------------------------------------------------- */
-
 .referrals-table {
-    width: 100%;
-    border-collapse: collapse;
-    /* ✅ العودة لـ display: table لضمان محاذاة الأعمدة */
-    display: table; 
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed; /* 👈 يثبت عرض الأعمدة */
 }
 
-/* ✅ إزالة display: block من thead و tbody والعودة للسلوك الطبيعي */
-.referrals-table thead, 
-.referrals-table tbody {
-    display: table-row-group; 
-}
-
-/* ✅ إزالة display: flex من tr والعودة لـ display: table-row */
-.referrals-table thead tr, 
-.referrals-table tbody tr {
-    display: table-row; 
-}
-
-.referrals-table th, .referrals-table td {
-    padding: 12px 15px;
-    text-align: right;
-    border-bottom: 1px solid #eee;
-    /* ✅ لا نحتاج لخصائص flex هنا */
-}
-
-/* 🛑 تثبيت الرأس مباشرة على TH */
-.referrals-table th {
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    
-    /* ✅ التثبيت: تطبيق الخصائص على رأس العمود */
-    position: sticky;
-    top: 0; 
-    z-index: 10; 
-    
-    white-space: nowrap;
-    transition: background-color 0.2s; 
-    
-    /* استخدام display: flex داخلياً فقط لترتيب النص وأيقونة الفرز */
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
+/* ---------------------------------------------------- */
+/* --- الرؤوس --- */
+/* ---------------------------------------------------- */
+.referrals-table thead th {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: right;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  white-space: nowrap;
+  padding: 12px 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-clip: padding-box; /* يمنع ظهور فراغات بيضاء */
 }
 
 .referrals-table th:hover {
-    background-color: #1a5c24; 
+  background-color: #1a5c24;
 }
 
-/* تنسيق أيقونات الفرز */
-.referrals-table th::after {
-    content: ' ';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    font-size: 12px;
-    color: #fff;
-    opacity: 0.5;
-    transition: opacity 0.2s;
-}
-.referrals-table th[data-sort="asc"]::after {
-    content: '\f0de'; 
-    opacity: 1;
-}
-.referrals-table th[data-sort="desc"]::after {
-    content: '\f0dd'; 
-    opacity: 1;
-}
-
-/* تنسيقات الصفوف */
-.referrals-table tr:nth-child(even) {
-    background-color: #f8f8f8;
-}
-
-.referrals-table tr:hover {
-    background-color: #e6f7ff;
-}
-
-/* تظليل الصفوف حسب الحالة */
-.referrals-table tr.status-Y { background-color: var(--status-y-bg); }
-.referrals-table tr.status-N { background-color: var(--status-n-bg); }
-.referrals-table tr.status-pending { background-color: var(--status-pending-bg); }
-
-/* تنسيقات زر التنزيل ورسالة لا توجد بيانات */
-.download-btn {
-    background: var(--secondary-color);
-    color: var(--primary-color);
-    font-weight: 700;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-}
-.download-btn:hover {
-    background: #d4951c;
-}
-
-.status-active { color: #28a745; font-weight: 800; }
-.status-inactive { color: var(--danger-color); font-weight: 800; }
-
-.no-data {
-    text-align: center;
-    padding: 20px;
-
-    color: var(--muted-color);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ✅ إصلاح نهائي لمشكلة الفراغ الأبيض في منتصف الجدول */
-
-/* 1️⃣ تأكد أن الرأس يمتد على كامل العرض */
-.referrals-table thead {
-  background-color: var(--primary-color);
-  display: table-header-group; /* يحافظ على عرض الأعمدة */
-  z-index: 5;
-}
-
-/* 2️⃣ تأكد أن الصفوف تأخذ نفس العرض وأن الظلال لا تنفصل */
-.referrals-table tbody {
-  display: table-row-group;
-  position: relative;
-  z-index: 1;
-}
-
-/* 3️⃣ إصلاح الخلفية البيضاء أسفل الرأس أثناء التمرير */
-.referrals-table th {
-  background-clip: padding-box; /* يمنع انفصال الخلفية */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* يعطي تدرج لطيف بين الرأس والجسم */
-}
-
-/* 4️⃣ أضف خلفية بلون الجدول لتغطي أي فجوات */
-.table-container {
-  background-color: var(--white-color);
-  position: relative;
-}
-
-/* 5️⃣ لمنع التقطّع في المنتصف عند التمرير */
-.referrals-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-  width: 100%;
-  table-layout: fixed; /* يضمن اتساق عرض الأعمدة */
-}
-
-
-
-
-
-
-/* ✅ إصلاح عدم اصطفاف الأعمدة وظهور الأعمدة البيضاء */
-
-/* 1️⃣ تأكد أن الجدول يعتمد عرض ثابت للأعمدة */
-.referrals-table {
-  width: 100%;
-  table-layout: fixed; /* 👈 أهم سطر لحل المشكلة */
-  border-collapse: collapse;
-}
-
-/* 2️⃣ اجعل كل خلية تقطع النص الطويل ولا توسع العمود */
-.referrals-table th,
-.referrals-table td {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* 3️⃣ خلفية مضمونة لكل خلية لمنع ظهور اللون الأبيض */
-.referrals-table td {
-  background-color: #fff; /* أو var(--white-color) */
-}
-
-/* 4️⃣ تباعد واضح بين الأعمدة لمنع الالتصاق */
-.referrals-table td,
-.referrals-table th {
-  padding: 12px 10px;
-}
-
-/* 5️⃣ تعديل اختياري لعرض الأعمدة (إن أردت ضبطها يدويًا) */
-.referrals-table th:nth-child(1),
-.referrals-table td:nth-child(1) { width: 150px; } /* الاسم */
-.referrals-table th:nth-child(2),
-.referrals-table td:nth-child(2) { width: 120px; } /* الهاتف */
-.referrals-table th:nth-child(3),
-.referrals-table td:nth-child(3) { width: 220px; } /* البريد */
-.referrals-table th:nth-child(4),
-.referrals-table td:nth-child(4) { width: 120px; } /* الحالة */
-
-
-
-
-
-
-/* ✅ إصلاح الطبقات والأعمدة البيضاء داخل tbody */
-.referrals-table tbody tr td {
-  background-color: #fff !important;
-  position: relative;
-  z-index: 1;
-}
-
-/* ✅ تأكد أن رأس الجدول فوق الجسم عند التمرير */
-.referrals-table thead th {
-  z-index: 5;
-}
-
-/* ✅ تأكد أن كل صف يحتفظ بمحاذاة العرض الكامل */
+/* ---------------------------------------------------- */
+/* --- الصفوف والخلايا --- */
+/* ---------------------------------------------------- */
 .referrals-table tbody tr {
   display: table-row;
   width: 100%;
 }
 
-/* ✅ تأكد أن الحاوية لا تقطع الخلفية */
-.table-container {
-  background-color: #fff;
-  overflow: auto;
+.referrals-table th,
+.referrals-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 12px 10px;
+  text-align: right;
+  border-bottom: 1px solid #eee;
+}
+
+.referrals-table tbody td {
+  background-color: #fff; /* ✅ يمنع الأعمدة البيضاء */
   position: relative;
+  z-index: 1;
+}
+
+.referrals-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.referrals-table tr:hover td {
+  background-color: #e6f7ff;
+}
+
+/* ---------------------------------------------------- */
+/* --- ضبط عرض الأعمدة (اختياري لتوزيع مثالي) --- */
+/* ---------------------------------------------------- */
+.referrals-table th:nth-child(1),
+.referrals-table td:nth-child(1) { width: 150px; } /* الاسم */
+.referrals-table th:nth-child(2),
+.referrals-table td:nth-child(2) { width: 130px; } /* الهاتف */
+.referrals-table th:nth-child(3),
+.referrals-table td:nth-child(3) { width: 250px; } /* البريد */
+.referrals-table th:nth-child(4),
+.referrals-table td:nth-child(4) { width: 130px; } /* الحالة */
+
+/* ---------------------------------------------------- */
+/* --- حالات التسجيل --- */
+/* ---------------------------------------------------- */
+.status-active { color: #28a745; font-weight: 800; }
+.status-inactive { color: var(--danger-color); font-weight: 800; }
+.referrals-table tr.status-Y { background-color: var(--status-y-bg); }
+.referrals-table tr.status-N { background-color: var(--status-n-bg); }
+.referrals-table tr.status-pending { background-color: var(--status-pending-bg); }
+
+/* ---------------------------------------------------- */
+/* --- زر التنزيل ورسالة لا توجد بيانات --- */
+/* ---------------------------------------------------- */
+.download-btn {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: 700;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.download-btn:hover {
+  background: #d4951c;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted-color);
 }
