@@ -272,27 +272,33 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
+        /* 🌟🌟 الحل: يجب أن تكون عناصر الجدول (table, thead, tbody, tr) كـ Blocks و Flexbox لتوزيع الأعمدة */
+
         .referrals-table {
             width: 100%;
             border-collapse: collapse;
-            /* 🌟🌟 الجديد: جعل الجدول ككتلة لتمكين التمرير والتطبيق المرن */
             display: block; 
         }
+        
+        .referrals-table thead {
+            display: block; 
+            width: 100%;
+        }
 
-        /* 🌟🌟 الحل: نجعل جسم الجدول يظهر ككتلة ليحتوي الصفوف عمودياً */
         .referrals-table tbody {
             display: block;
-            /* تحديد ارتفاع لإظهار شريط التمرير الأفقي عند الحاجة */
-            max-height: 400px; /* يمكن تعديله حسب الحاجة */
+            max-height: 400px; /* تحديد ارتفاع لإظهار شريط التمرير العمودي */
             overflow-y: auto; 
             overflow-x: hidden; 
+            width: 100%;
         }
         
-        /* 🌟🌟 تطبيق Flexbox على كل صف لكي تتوزع خلايا الصف أفقياً */
-        .referrals-table thead, .referrals-table tbody tr {
+        /* 🌟🌟 نطبق Flexbox الآن على كل صف (سواء رأس أو جسم) لكي تتوزع خلايا الصف أفقياً */
+        .referrals-table thead tr, 
+        .referrals-table tbody tr {
             display: flex;
             width: 100%; 
-            flex-wrap: nowrap; /* منع الالتفاف الأفقي للخلايا */
+            flex-wrap: nowrap; 
         }
 
         .referrals-table th, .referrals-table td {
@@ -313,11 +319,16 @@
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
+            
+            /* 🌟 التثبيت: تطبيق الخصائص على رأس العمود */
             position: sticky;
             top: 0; 
+            z-index: 10; /* لضمان ظهوره فوق الصفوف الأخرى أثناء التمرير */
+            
             white-space: nowrap;
             transition: background-color 0.2s; 
             
+            /* لضمان محاذاة النص والفرز */
             display: flex;
             justify-content: space-between; 
             align-items: center;
