@@ -255,3 +255,32 @@
 .referrals-table th:nth-child(4),
 .referrals-table td:nth-child(4) { width: 120px; } /* الحالة */
 
+
+
+
+
+
+/* ✅ إصلاح الطبقات والأعمدة البيضاء داخل tbody */
+.referrals-table tbody tr td {
+  background-color: #fff !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* ✅ تأكد أن رأس الجدول فوق الجسم عند التمرير */
+.referrals-table thead th {
+  z-index: 5;
+}
+
+/* ✅ تأكد أن كل صف يحتفظ بمحاذاة العرض الكامل */
+.referrals-table tbody tr {
+  display: table-row;
+  width: 100%;
+}
+
+/* ✅ تأكد أن الحاوية لا تقطع الخلفية */
+.table-container {
+  background-color: #fff;
+  overflow: auto;
+  position: relative;
+}
