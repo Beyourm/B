@@ -275,19 +275,27 @@
         .referrals-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px; 
-        }
-        
-        /* 🌟 التأكد من عرض رؤوس الأعمدة أفقياً */
-        .referrals-table thead tr {
-            display: flex;
-            width: 100%; 
         }
 
+        /* 🌟🌟 التعديل الحاسم: جعل كل صف يظهر بمرونة وأفقياً */
+        .referrals-table thead, .referrals-table tbody, .referrals-table tr {
+            display: flex;
+            width: 100%;
+        }
+        /* 🌟🌟 منع التفاف الصفوف */
+        .referrals-table tbody tr {
+            flex-wrap: nowrap;
+        }
+        
         .referrals-table th, .referrals-table td {
             padding: 12px 15px;
             text-align: right;
             border-bottom: 1px solid #eee;
+
+            /* 🌟 الخصائص الجديدة: توزيع المساحة بالتساوي ومنع الانهيار */
+            flex-grow: 1; 
+            flex-basis: 0; 
+            min-width: 100px; 
         }
 
         /* 3. تنسيق رؤوس الجدول لفرز الأعمدة (تمت إزالة الفراغ) */
@@ -302,14 +310,11 @@
             white-space: nowrap;
             transition: background-color 0.2s; 
             
-            /* 🌟 التعديل الأساسي: استخدام Flexbox لتوزيع المحتوى بالتساوي */
             display: flex;
-            justify-content: space-between; /* دفع النص والأيقونة للطرفين */
+            justify-content: space-between; 
             align-items: center;
             
-            /* 🌟 التعديل الجديد لضمان عدم الالتفاف على الجوال */
             flex-shrink: 0; 
-            min-width: 100px; 
         }
         
         .referrals-table th:hover {
@@ -478,7 +483,7 @@
 
 <script>
     // 🛑 يجب استبدال هذا برابط النشر الحقيقي
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxb8aURQ9EGpZdMzaC4RMixuf9T_YjGksf4L2W6WW7aSBPyrBz7jiXuRzeY5V7MnqyEqA/exec'; 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbYeuziWHe6ODINemry6n3XNfXTpDrZ2jxo1GXG9bAjm6AAhiCyogt3p1Y48qvJ1kppQ/exec'; 
     const BASE_REGISTRATION_URL = 'https://skillia.netlify.app/courses.html'; 
 
     const statusMessage = document.getElementById('statusMessage');
