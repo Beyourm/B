@@ -3,10 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>لوحة تحكم المسوِّق</title>
+    <title>لوحة تحكم المسوِّق</title> 
 
-    <meta property="og:title" content="لوحة تحكم المسوِّق - مؤسسة كن أنت" />
-    <meta property="og:description" content="إحصائيات إحالاتك الحالية:" /> 
+    <meta property="og:title" content="لوحة تحكم المسوِّق" /> 
+    
+    <meta property="og:description" content="راجع إحصائيات إحالتك عبر الرابط الخاص بك." /> 
+    
     <meta property="og:image" content="https://skillia.netlify.app/images/photo.jpg" />
     <meta property="og:url" content="https://sklilia.netlify.app/Trainees_Records" />
     <meta property="og:type" content="website" />
@@ -401,21 +403,23 @@
 
     /**
      * @function updateMetaTags
-     * 🌟 الدالة الجديدة: لتحديث وسوم الـ Open Graph (OG) باسم المسوق
+     * 🌟 تم التعديل هنا لتحديث og:title
      */
     function updateMetaTags(data) {
         if (data.personal_data && data.personal_data.length > 0) {
-            const marketerName = data.personal_data[0].fullname || 'مسوِّق برامجنا';
+            // يتم استخراج الاسم الكامل للمسوق
+            const marketerName = data.personal_data[0].fullname || 'غير معروف';
             const descriptionTag = document.querySelector('meta[property="og:description"]');
             const titleTag = document.querySelector('meta[property="og:title"]');
             
-            if (descriptionTag) {
-                // تعيين الوصف ليكون اسم المسوق
-                descriptionTag.setAttribute('content', `أهلاً بك في لوحة تحكم المسوِّق: ${marketerName}`);
-            }
+            // ✅ التعديل الرئيسي: تحديث og:title ليعرض "لوحة تحكم المسوِّق - [اسم المسوِّق]"
             if (titleTag) {
-                // تعديل عنوان الصفحة الأساسي
-                titleTag.setAttribute('content', `لوحة تحكم المسوِّق: ${marketerName}`);
+                titleTag.setAttribute('content', `لوحة تحكم المسوِّق - ${marketerName}`);
+            }
+
+            // تحديث og:description ليعرض الاسم
+            if (descriptionTag) {
+                descriptionTag.setAttribute('content', `أهلاً بالمسوِّق ${marketerName}. راجع إحصائيات إحالتك الحالية.`);
             }
             
             // تحديث عنوان الصفحة في المتصفح
