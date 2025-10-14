@@ -268,7 +268,7 @@
         }
         
         
-                /* تنسيق زر تصفح الدورات الجديد */
+        /* تنسيق زر تصفح الدورات الجديد */
         .courses-btn {
             /* الألوان والمظهر الأساسي (باستخدام المتغيرات التي استخدمتها سابقًا) */
             background: var(--secondary-color); /* اللون الأصفر/الذهبي */
@@ -301,8 +301,61 @@
         .courses-btn i {
             margin-left: 8px; /* مسافة بين الأيقونة والنص */
         }
-
         
+        /* ------------------------------------- */
+        /* تنسيقات الـ Modal الجديدة */
+        /* ------------------------------------- */
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000; /* أعلى من أي شيء آخر */
+            display: none; /* مخفي افتراضياً */
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: var(--white-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 450px; /* نفس عرض النافذة التي كنا نفتحها */
+            height: 80vh; /* ارتفاع مرن للرؤية */
+            position: relative;
+            padding: 10px;
+        }
+        
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+            display: block;
+        }
+        
+        .modal-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 10001; /* فوق كل شيء */
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .modal-close-btn:hover {
+            opacity: 1;
+        }
         
         /* التنسيقات المتعلقة بالجدول (مثل .table-container) ستنتقل إلى table-styles.css */
     </style>
@@ -376,11 +429,8 @@
 <div id="toastNotification" class="toast-notification">
     <i class="fas fa-check-circle"></i> تم نسخ الرابط إلى الحافظة!
 </div>
-<script src="marketer_tracker.js"></script> 
-<script src="table-logic.js"></script> 
-    <script src="dashboard.js"></script> 
 
-    <div id="coursesModalOverlay" class="modal-overlay">
+<div id="coursesModalOverlay" class="modal-overlay">
     <div class="modal-content">
         <button id="closeModalBtn" class="modal-close-btn">&times;</button>
         
@@ -388,65 +438,9 @@
     </div>
 </div>
 
-<style>
-    /* ------------------------------------- */
-    /* تنسيقات الـ Modal الجديدة */
-    /* ------------------------------------- */
-    
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.6);
-        backdrop-filter: blur(4px);
-        z-index: 10000; /* أعلى من أي شيء آخر */
-        display: none; /* مخفي افتراضياً */
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .modal-content {
-        background: var(--white-color);
-        border-radius: 15px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        width: 90%;
-        max-width: 450px; /* نفس عرض النافذة التي كنا نفتحها */
-        height: 80vh; /* ارتفاع مرن للرؤية */
-        position: relative;
-        padding: 10px;
-    }
-    
-    .modal-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        border-radius: 10px;
-        display: block;
-    }
-    
-    .modal-close-btn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: var(--danger-color);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        font-size: 20px;
-        line-height: 1;
-        cursor: pointer;
-        z-index: 10001; /* فوق كل شيء */
-        opacity: 0.8;
-        transition: opacity 0.2s;
-    }
-    .modal-close-btn:hover {
-        opacity: 1;
-    }
 
-</style>
-
+<script src="marketer_tracker.js"></script> 
+<script src="table-logic.js"></script> 
+<script src="dashboard.js"></script> 
 </body>
 </html>
-
-
