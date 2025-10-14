@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>اختيار الدبلوم</title>
+
+<style>
+  body {
+    font-family: "Cairo", sans-serif;
+    background: #f3f4f6;
+    text-align: center;
+    padding: 50px;
+  }
+
+  /* خلفية النافذة */
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  /* الصندوق */
+  .dialog-box {
+    background: #fff;
+    border-radius: 18px;
+    padding: 25px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    animation: slideUp 0.4s ease;
+    text-align: right;
+  }
+
+  .dialog-header {
+    font-size: 20px;
+    font-weight: 700;
+    color: #222;
+    text-align: center;
+  }
+
+  .toggle-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .toggle-btn:hover {
+    background: #1d4ed8;
+    transform: scale(1.03);
+  }
+
+  .arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .arrow.rotate {
+    transform: rotate(180deg);
+  }
+
+  .course-list {
+    margin-top: 15px;
+    display: none; 
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    
+    /* ------------------------------------- */
+    /* التعديلات الجديدة لتمكين التمرير */
+    max-height: 250px; /* تحديد أقصى ارتفاع للقائمة (يمكنك تعديله) */
+    overflow-y: auto;   /* تفعيل التمرير العمودي عند تجاوز الارتفاع المحدد */
+    padding-right: 5px; /* مسافة داخلية لتجنب تداخل شريط التمرير مع المحتوى */
+    /* ------------------------------------- */
+  }
+
+  .course-item {
+    background: #f9fafb;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .course-item:hover {
+    background: #e0e7ff;
+    color: #1e40af;
+  }
+
+  .message {
+    text-align: center;
+    margin-top: 12px;
+    color: #16a34a;
+    font-weight: 600;
+    display: none;
+    padding: 10px;
+    border: 1px solid #c8e6c9;
+    background: #f1fff1;
+    border-radius: 8px;
+  }
+
+  .close-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+  }
+
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+  @keyframes slideUp { from {transform:translateY(30px);opacity:0;} to {transform:translateY(0);opacity:1;} }
+</style>
+</head>
+
+<body>
+
+<div class="dialog-overlay" id="dialogOverlay">
+  <div class="dialog-box">
+    <div class="dialog-header">🎓اختر الدورة المراد التسوق لها </div>
+    <button class="toggle-btn" id="toggleButton">
+      عرض الدورات <span class="arrow" id="arrow">🔻</span>
+    </button>
+
+    <div class="course-list" id="courseList">
+      </div>
+
+    <div class="message" id="message">تم نسخ الرابط ✅</div>
+    <button class="close-btn" id="closeButton">إغلاق</button>
+  </div>
+</div>
+
+<script src="dialog.js"></script>
+
+<script>
+    // عند تحميل الصفحة، يتم استدعاء دالة التهيئة من dialog.js
+    window.onload = initializeDialog; 
+</script>
+
+</body>
+</html>
+
