@@ -52,8 +52,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
             overflow: hidden;
-            /* تم إزالة الـ fadeIn من CSS الأساسي لجعله يظهر بالـ JS */
-            color: var(--text-color-dark); 
+            animation: fadeIn 0.8s ease-out;
         }
         
         @keyframes fadeIn {
@@ -85,13 +84,6 @@
             font-weight: 900;
             color: var(--secondary-color);
             direction: ltr;
-        }
-        
-        /* تنسيق محاذاة الأزرار أسفل الهيدر - جديد */
-        .header-actions {
-            text-align: center; /* لمحاذاة العناصر الداخلية في الوسط */
-            margin-top: 15px;
-            padding: 0 25px; /* للحفاظ على مسافة داخلية متناسقة */
         }
 
         .content {
@@ -279,8 +271,8 @@
         /* تنسيق زر تصفح الدورات الجديد */
         .courses-btn {
             /* الألوان والمظهر الأساسي (باستخدام المتغيرات التي استخدمتها سابقًا) */
-            background: var(--secondary-color);
-            color: var(--primary-color);     
+            background: var(--secondary-color); /* اللون الأصفر/الذهبي */
+            color: var(--primary-color);      /* اللون الداكن للنص */
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
@@ -289,10 +281,10 @@
             font-weight: 800;
             
             /* التباعد والمحاذاة */
-            /* تم إزالة الـ margin-top: 15px ونقله إلى .header-actions */
+            margin-top: 15px;
             display: inline-flex;
             align-items: center;
-            justify-content: center; 
+            justify-content: center; /* لتوسيط النص والأيقونة */
             
             /* تأثيرات الحركة والظل */
             transition: background 0.3s, transform 0.2s;
@@ -301,13 +293,13 @@
 
         /* تأثير التفاعل عند مرور المؤشر */
         .courses-btn:hover {
-            background: #f0b940; 
+            background: #f0b940; /* ظل أغمق للون الثانوي */
             transform: translateY(-1px);
         }
 
         /* تنسيق الأيقونة داخل الزر */
         .courses-btn i {
-            margin-left: 8px; 
+            margin-left: 8px; /* مسافة بين الأيقونة والنص */
         }
         
         /* ------------------------------------- */
@@ -319,8 +311,8 @@
             inset: 0;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
-            z-index: 10000; 
-            display: none; 
+            z-index: 10000; /* أعلى من أي شيء آخر */
+            display: none; /* مخفي افتراضياً */
             align-items: center;
             justify-content: center;
         }
@@ -330,8 +322,8 @@
             border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             width: 90%;
-            max-width: 450px; 
-            height: 80vh; 
+            max-width: 450px; /* نفس عرض النافذة التي كنا نفتحها */
+            height: 80vh; /* ارتفاع مرن للرؤية */
             position: relative;
             padding: 10px;
         }
@@ -357,7 +349,7 @@
             font-size: 20px;
             line-height: 1;
             cursor: pointer;
-            z-index: 10001; 
+            z-index: 10001; /* فوق كل شيء */
             opacity: 0.8;
             transition: opacity 0.2s;
         }
@@ -370,17 +362,15 @@
 </head>
 <body>
 
-<div class="dashboard-container" id="dashboardContainer" style="display:none;">
+<div class="dashboard-container">
     <header>
         <h1>لوحة تحكم المسوِّق</h1>
         <p id="marketer-id-display">الرجاء إدخال المعرّف في الرابط</p>
     </header>
+<button class="courses-btn" onclick="openCoursesDialog()">
+    <i class="fas fa-graduation-cap"></i> تصفح الدورات
+</button>
 
-    <div class="header-actions">
-        <button class="courses-btn" onclick="openCoursesDialog()">
-            <i class="fas fa-graduation-cap"></i> تصفح الدورات
-        </button>
-    </div>
 
     <div class="content">
         <div id="statusMessage" class="loading" style="text-align:center; color:#555;">
