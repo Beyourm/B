@@ -268,40 +268,62 @@
         }
         
         
-        /* تنسيق زر تصفح الدورات الجديد */
+        /* تنسيق زر تصفح الدورات الجديد (تم تطويره) */
         .courses-btn {
-            /* الألوان والمظهر الأساسي (باستخدام المتغيرات التي استخدمتها سابقًا) */
-            background: var(--secondary-color); /* اللون الأصفر/الذهبي */
-            color: var(--primary-color);      /* اللون الداكن للنص */
+            background: var(--secondary-color); 
+            color: var(--primary-color);      
             border: none;
             padding: 10px 20px;
             border-radius: 10px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 800;
-            
-            /* التباعد والمحاذاة */
             margin-top: 15px;
             display: inline-flex;
             align-items: center;
-            justify-content: center; /* لتوسيط النص والأيقونة */
-            
-            /* تأثيرات الحركة والظل */
+            justify-content: center; 
             transition: background 0.3s, transform 0.2s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
-        /* تأثير التفاعل عند مرور المؤشر */
-        .courses-btn:hover {
-            background: #f0b940; /* ظل أغمق للون الثانوي */
-            transform: translateY(-1px);
-        }
+        /* ------------------------------------- */
+        /* تحسين زر 'اكتشف دوراتنا الآن' */
+        /* ------------------------------------- */
 
-        /* تنسيق الأيقونة داخل الزر */
-        .courses-btn i {
-            margin-left: 8px; /* مسافة بين الأيقونة والنص */
+        header .courses-btn {
+            /* تعديل التمركز داخل الهيدر */
+            margin-top: 15px;
+            /* خلفية متدرجة لأقصى جاذبية بصرية */
+            background: linear-gradient(135deg, var(--secondary-color), #f0b940);
+            color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(229, 167, 45, 0.5); /* ظل ذهبي بارز */
+            font-size: 17px;
+            padding: 12px 25px; /* تكبير بسيط ليصبح أكثر وضوحاً */
         }
         
+        .courses-btn:hover {
+            /* تغيير تدرج الخلفية عند التحويم */
+            background: linear-gradient(135deg, #f0b940, #ffd55b);
+            transform: translateY(-2px); /* حركة رفع طفيفة */
+            box-shadow: 0 8px 20px rgba(229, 167, 45, 0.6);
+        }
+
+        .courses-btn:active {
+            /* تأثير الضغط القوي (UI/UX) */
+            transform: scale(0.97);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* تحريك الأيقونة لجذب الانتباه */
+        .courses-btn i {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .courses-btn:hover i {
+            transform: rotate(-10deg) scale(1.1);
+        }
+
         /* ------------------------------------- */
         /* تنسيقات الـ Modal الجديدة */
         /* ------------------------------------- */
@@ -322,8 +344,8 @@
             border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             width: 90%;
-            max-width: 450px; /* نفس عرض النافذة التي كنا نفتحها */
-            height: 80vh; /* ارتفاع مرن للرؤية */
+            max-width: 450px; 
+            height: 80vh; 
             position: relative;
             padding: 10px;
         }
@@ -357,7 +379,6 @@
             opacity: 1;
         }
         
-        /* التنسيقات المتعلقة بالجدول (مثل .table-container) ستنتقل إلى table-styles.css */
     </style>
 </head>
 <body>
@@ -366,11 +387,12 @@
     <header>
         <h1>لوحة تحكم المسوِّق</h1>
         <p id="marketer-id-display">الرجاء إدخال المعرّف في الرابط</p>
+        
+        <button class="courses-btn" onclick="openCoursesDialog()">
+            <i class="fas fa-graduation-cap"></i> اكتشف دوراتنا الآن
+        </button>
+        
     </header>
-<button class="courses-btn" onclick="openCoursesDialog()">
-    <i class="fas fa-graduation-cap"></i> تصفح الدورات
-</button>
-
 
     <div class="content">
         <div id="statusMessage" class="loading" style="text-align:center; color:#555;">
@@ -438,6 +460,36 @@
     </div>
 </div>
 
+
+<script>
+// دالة JavaScript المعدلة مع حالة التحميل
+function openCoursesDialog() {
+    const overlay = document.getElementById('coursesModalOverlay');
+    const iframe = document.getElementById('dialogIframe');
+    const coursesBtn = document.querySelector('.courses-btn');
+    
+    // 1. عرض حالة التحميل (UX Enhancement)
+    coursesBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحميل...';
+    coursesBtn.disabled = true; // منع النقر المتعدد
+
+    // 2. إعداد وعرض النافذة
+    iframe.src = ''; // تفريغ المحتوى السابق أولاً
+    overlay.style.display = 'flex';
+    iframe.src = 'courses.html'; // رابط صفحة الدورات الفعلي
+
+    // 3. إعادة الزر لوضعه الطبيعي بعد تحميل المحتوى
+    iframe.onload = () => {
+        coursesBtn.innerHTML = '<i class="fas fa-graduation-cap"></i> اكتشف دوراتنا الآن';
+        coursesBtn.disabled = false;
+    };
+    
+    // معالجة حالة فشل التحميل كـ fallback (اختياري)
+    iframe.onerror = () => {
+        coursesBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> خطأ! حاول مجدداً';
+        coursesBtn.disabled = false;
+    };
+}
+</script>
 
 <script src="marketer_tracker.js"></script> 
 <script src="table-logic.js"></script> 
