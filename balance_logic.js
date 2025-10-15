@@ -2,7 +2,7 @@
 
 // **!! ضع رابط Apps Script المنشور هنا !!**
 // مثال: const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfy.../exec';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyQa_Zub2il_bl9tAx58gywUiVRlatu2DNx1CBgrcmAuimejKwi7GlGfTxtZMf0wdX5g/exec'; 
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcEySM2PcyCglYchr5d6uTqHacWW-a2-HqkjstQrf5rwMNe6sOUCxCCrLKoo_-6PksEQ/exec'; 
 
 /**
  * وظيفة حقيقية لجلب الرصيد الحالي (العمولة) من Google Apps Script.
