@@ -1,25 +1,46 @@
 // balance_logic.js
 
+// **!! ضع رابط Apps Script المنشور هنا !!**
+// مثال: const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfy.../exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyQa_Zub2il_bl9tAx58gywUiVRlatu2DNx1CBgrcmAuimejKwi7GlGfTxtZMf0wdX5g/exec'; 
+
 /**
- * وظيفة وهمية (Mock Function) لجلب الرصيد الحالي من خادم خارجي.
- * يجب استبدال هذه الوظيفة باتصال AJAX/Fetch API حقيقي للخادم.
+ * وظيفة حقيقية لجلب الرصيد الحالي (العمولة) من Google Apps Script.
  *
  * @param {string} marketerId - معرّف المسوّق لجلب رصيده.
  * @returns {Promise<number>} - تتعهد بإرجاع قيمة الرصيد.
  */
 function fetchCurrentBalance(marketerId) {
-    console.log(`[Balance Logic] Attempting to fetch balance for ID: ${marketerId}`);
+    console.log(`[Balance Logic] Attempting to fetch balance for ID: ${marketerId} using Apps Script...`);
     
-    // محاكاة جلب البيانات مع تأخير زمني (Delay)
-    return new Promise((resolve) => {
-        // قيمة الرصيد الافتراضية
-        const mockBalance = 2456.75; 
+    // بناء الرابط بالـ ID كمعامل (parameter) باستخدام 'marketer_id' ليتوافق مع كود Apps Script
+    const url = `${APPS_SCRIPT_URL}?marketer_id=${marketerId}`;
 
-        setTimeout(() => {
-            console.log(`[Balance Logic] Balance fetched successfully: $${mockBalance}`);
-            resolve(mockBalance);
-        }, 800); 
-    });
+    return fetch(url)
+        .then(response => {
+            // Apps Script يعيد دائماً استجابة HTTP 200، لذا نفحص محتوى الـ JSON
+            if (!response.ok) {
+                // قد يحدث خطأ نادر هنا إذا كانت هناك مشكلة في الشبكة نفسها
+                 throw new Error(`Network Error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                // التعامل مع الأخطاء المرسلة من كود Apps Script (مثل "Marketer not found")
+                throw new Error(`Apps Script Error: ${data.error}`);
+            }
+            
+            // نستخدم 'balance' لأنه الاسم الذي أرجعناه في Apps Script ليمثل العمولة
+            const balanceValue = parseFloat(data.balance); 
+            if (isNaN(balanceValue)) {
+                 // إذا لم تكن القيمة رقماً صالحاً
+                throw new Error("Received balance is not a valid number.");
+            }
+            
+            console.log(`[Balance Logic] Balance fetched successfully: $${balanceValue}`);
+            return balanceValue;
+        });
 }
 
 /**
@@ -38,7 +59,7 @@ function updateBalanceUI(balance) {
                 maximumFractionDigits: 2
             }); 
         } else {
-            // في حالة الخطأ
+            // في حالة الخطأ أو التحميل
             displayValue = balance;
         }
 
@@ -54,10 +75,11 @@ function updateBalanceUI(balance) {
 
 /**
  * وظيفة رئيسية لبدء عملية جلب وعرض الرصيد.
+ * يجب أن تستدعى هذه الدالة من ملف dashboard.js.
  * @param {string} marketerId - معرّف المسوّق.
  */
 export function initBalanceDisplay(marketerId) {
-    // 1. عرض حالة التحميل (إذا لم يكن الـ Skeleton مرئياً بعد)
+    // 1. عرض حالة التحميل (إذا كانت القيمة الأولية صفراً)
     const balanceElement = document.getElementById('current-balance');
     if (balanceElement && balanceElement.textContent.trim() === '0') {
          balanceElement.textContent = '...'; 
