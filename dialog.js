@@ -1,5 +1,5 @@
-// ⛔⛔⛔ هام: استبدل هذا بالرابط الذي حصلت عليه بعد نشر Google Apps Script ⛔⛔⛔
-const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6LrV0srUKihrI5nOxZFc4psHkoCjrBeyBjotmFO9KGUO8JkUu1oHMwtXHbsKVjzgG/exec";
+// ⛔⛔⛔ هام: تم تحديث هذا بالرابط الجديد بعد نشر Google Apps Script ⛔⛔⛔
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxvaDty4OhXdnR3poYEuwj9W53esn2923XYpKZc7LTKf_M17Z576YGP_EkjB9bt-hN8pA/exec";
 
 let COURSES = []; // قائمة الدورات الآن ديناميكية
 
@@ -64,7 +64,14 @@ function renderCourseList() {
     COURSES.forEach(course => {
         const item = document.createElement('div');
         item.className = 'course-item';
-        item.textContent = course.name;
+        
+        // بناء المحتوى
+        // يتم عرض اسم الدورة ورسومها
+        item.innerHTML = `
+          <span>${course.name}</span>
+          <span class="levies-text">الرسوم: ${course.levies}</span>
+        `;
+        
         // نستخدم course.slug الذي هو في الواقع قيمة العمود A (id)
         item.setAttribute('onclick', `copyLink('${course.slug}')`); 
         listContainer.appendChild(item);
@@ -139,3 +146,9 @@ function initializeDialog() {
     // 5. محاولة جلب الدورات عند التهيئة (يمكن إزالة هذا السطر والاعتماد فقط على toggleList)
     //fetchCourses();
 }
+
+
+
+
+
+//هنا ينتهي ملف js
