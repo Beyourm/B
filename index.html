@@ -44,10 +44,9 @@
             font-family: "Tajawal", sans-serif;
             background: linear-gradient(120deg, var(--accent-color) 0%, #eaf0f5 100%); 
             margin: 0;
-            padding: 10px; /* تقليل الـ padding الخارجي */
+            padding: 10px; 
             min-height: 100vh;
             color: var(--text-color-dark);
-            /* تغيير آلية التوسيط لضمان التمركز الأفقي */
             display: block; 
             text-align: center;
             box-sizing: border-box;
@@ -57,14 +56,14 @@
         .dashboard-container {
             width: 100%;
             max-width: 900px; 
-            margin: 40px auto; /* تمركز أفقي مضمون */
+            margin: 40px auto; 
             background: var(--white-color);
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
             overflow: hidden;
             animation: fadeIn 0.8s ease-out;
             transition: background 0.5s ease, box-shadow 0.5s ease;
-            text-align: right; /* إعادة النص لليمين داخل الحاوية */
+            text-align: right; 
         }
         
         @keyframes fadeIn {
@@ -346,8 +345,8 @@
             background: #1a5c24;
         }
         
-         /* ------------------------------------- */
-        /* تنسيقات الـ Modal الجديدة (ULTRA-FIX) */
+        /* ------------------------------------- */
+        /* تنسيقات الـ Modal الجديدة (ULTRA-FINAL FIX: Hidden by Default, Centered when Visible) */
         /* ------------------------------------- */
         
         .modal-overlay {
@@ -356,17 +355,25 @@
             right: 0;
             bottom: 0;
             left: 0;
-            background: rgba(0,0,0,0.8); /* زيادة العتامة قليلاً */
+            background: rgba(0,0,0,0.8); 
             backdrop-filter: blur(5px); 
-            z-index: 9999999; /* قيمة قصوى لضمان الظهور فوق أي شيء */
-            display: none; /* مخفي افتراضياً */
-            /* إلغاء الانتقالات مؤقتاً لضمان الظهور */
-            /* transition: opacity 0s; */
+            z-index: 9999999; 
+            
+            /* التعديل الحاسم: إخفاء صارم وعدم وجود أي display: flex هنا */
+            display: none; 
+            
+            /* لضمان التمركز الفعال عند الظهور: */
+            align-items: center; 
+            justify-content: center; 
+            
+            /* إضافة مسافة حول المحتوى لضمان عدم شموله للشاشة */
+            padding: 10px; 
         }
         
         .modal-overlay.is-visible {
-            display: flex !important; /* فرض العرض باستخدام !important */
-            opacity: 1 !important;    /* فرض العتامة */
+            /* التعديل الحاسم: تفعيل العرض (Display) فقط عند إضافة هذا الكلاس */
+            display: flex !important; 
+            opacity: 1 !important;    
         }
 
         .modal-content {
@@ -374,18 +381,22 @@
             border-radius: 20px; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
             width: 95%; 
-            max-width: 500px; 
-            height: 90vh; 
+            max-width: 450px; 
+            height: auto; 
+            max-height: 75vh; 
             position: relative;
             padding: 10px;
-            /* إلغاء الانتقالات والتحويلات */
             transform: none;
             transition: none; 
+            display: flex; 
+            flex-direction: column;
+            
+            box-sizing: border-box; 
         }
-        
+
         .modal-iframe {
             width: 100%;
-            height: 100%;
+            flex-grow: 1; 
             border: none;
             border-radius: 15px; 
             display: block;
@@ -413,7 +424,6 @@
             background: #c9303c;
             transform: rotate(90deg);
         }
-
         /* ------------------------------------- */
 
         
@@ -676,9 +686,8 @@ function toggleDarkMode() {
 
 // دالة وهمية لتطبيق الفلترة المتقدمة (تتطلب تنفيذاً في JS)
 function applyAdvancedFilter() {
-    // منطق دمج الفلترة حسب الحالة، العمر، والجنس والمدينة
     console.log("Applying advanced filters...");
-    // يجب أن تكون هذه الدالة جزءاً من منطق filterReferrals في ملف table-logic.js
+    // هذا يحتاج منطق في ملفات JS الخارجية
 }
 
 // دالة افتراضية موجودة في الكود الأصلي
@@ -687,35 +696,62 @@ function filterReferrals() {
     // هذا يحتاج منطق في ملفات JS الخارجية
 }
 
-</script>
 
-<script>
-// دالة JavaScript المعدلة مع حالة التحميل
-function openCoursesDialog() {
-    const overlay = document.getElementById('coursesModalOverlay');
-    const iframe = document.getElementById('dialogIframe');
-    const coursesBtn = document.querySelector('.courses-btn');
+// دالة تهيئة مخطط بياني وهمي (Placeholder Chart)
+function initPlaceholderChart() {
+    const ctx = document.getElementById('referral-pie-chart');
     
-    // 1. عرض حالة التحميل (UX Enhancement)
-    coursesBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحميل...';
-    coursesBtn.disabled = true; // منع النقر المتعدد
+    // التأكد من وجود العنصر
+    if (!ctx) return; 
 
-    // 2. إعداد وعرض النافذة
-    iframe.src = ''; // تفريغ المحتوى السابق أولاً
-    overlay.style.display = 'flex';
-    iframe.src = 'courses.html'; // رابط صفحة الدورات الفعلي
+    // إزالة رسالة الـ Placeholder بمجرد تهيئة المخطط
+    const placeholderMessage = document.querySelector('#analytics-charts p');
+    if (placeholderMessage) {
+        placeholderMessage.style.display = 'none';
+    }
 
-    // 3. إعادة الزر لوضعه الطبيعي بعد تحميل المحتوى
-    iframe.onload = () => {
-        coursesBtn.innerHTML = '<i class="fas fa-graduation-cap"></i> اكتشف دوراتنا الآن';
-        coursesBtn.disabled = false;
+    // بيانات وهمية (Dummy Data) لضمان ظهور المخطط
+    const dummyData = {
+        labels: ['مسجلون نشطون (Y)', 'مسجلون غير نشطين/معلقين (N/P)'],
+        datasets: [{
+            data: [5, 2], // 5 نشطين و 2 غير نشطين كمثال
+            backgroundColor: [
+                '#0d3b14', // اللون الأخضر (Primary)
+                '#e5a72d'  // اللون الذهبي (Secondary)
+            ],
+            hoverOffset: 10
+        }]
     };
-    
-    // معالجة حالة فشل التحميل كـ fallback (اختياري)
-    iframe.onerror = () => {
-        coursesBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> خطأ! حاول مجدداً';
-        coursesBtn.disabled = false;
+
+    // خيارات المخطط
+    const config = {
+        type: 'doughnut', // نوع المخطط الدائري المجوف
+        data: dummyData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: 'Tajawal',
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
     };
+
+    // تهيئة المخطط
+    new Chart(ctx, config);
+}
+
+// استدعاء الدالة عند تحميل النافذة
+window.onload = function() {
+    // محاكاة تهيئة المخطط بعد تأخير بسيط لإظهار حالة التحميل
+    setTimeout(initPlaceholderChart, 1500); 
 }
 </script>
 
@@ -723,6 +759,5 @@ function openCoursesDialog() {
 <script src="table-logic.js"></script> 
 <script src="dashboard.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-
 </body>
 </html>
