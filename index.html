@@ -213,9 +213,10 @@
         /* ------------------------------------- */
         /* تحسينات الـ UI/UX للبطاقات */
         /* ------------------------------------- */
+        /* تم إزالة .stats-grid من هنا ليعمل iframe مكانه */
+        /* ولكن نترك قواعد البطاقات لدعم skeleton loading */
         .stats-grid {
             display: grid;
-            /* يتم الآن التوزيع على 3 أعمدة (أو ما يناسب الشاشة) */
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
             gap: 20px;
             margin-bottom: 25px;
@@ -272,6 +273,7 @@
         
         /* ------------------------------------- */
         /* تنسيق بطاقة الرصيد الجديدة (NEW CARD STYLE) */
+        /* تم تركها لبطاقة الهيكل (Skeleton) */
         /* ------------------------------------- */
         .balance-card {
             background: linear-gradient(135deg, var(--secondary-color) 10%, var(--accent-color) 90%);
@@ -402,7 +404,7 @@
             width: 95%; 
             max-width: 450px; 
             height: auto; 
-            max-height: 85vh; /* تم التعديل إلى 85vh */
+            max-height: 85vh; 
             position: relative;
             padding: 10px;
             transform: none;
@@ -488,12 +490,10 @@
             .content {
                 padding: 15px;
             }
-            /* جعل البطاقات عمود واحد بشكل صريح */
             .stats-grid {
                 grid-template-columns: 1fr;
             }
             .filters-bar {
-                 /* جعل شريط الفلاتر يتراص بشكل عمودي على الشاشات الصغيرة */
                 flex-direction: column;
             }
             .toggle-btn {
@@ -547,8 +547,6 @@
                 </div>
             </div> 
             
-            
-            
             <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-address-card card-title-icon"></i> البيانات الشخصية</h2>
             <div class="details-card skeleton-card" style="min-height: 150px; padding: 10px;">
                 <div class="skeleton-details-item">
@@ -563,28 +561,23 @@
             
         </div>
 
+       
         <div id="dashboardContent" style="display:none;">
             
-            <div class="stats-grid">
-                <div class="stats-card">
-                    <h2><i class="fas fa-users card-title-icon"></i> إجمالي عدد المسجّلين عبر الرابط الخاص بك</h2>
-                    <span class="stats-count" id="referrals-count">0</span>
-                </div>
-                <div class="stats-card active-card">
-                    <h2><i class="fas fa-check-circle card-title-icon"></i> المسجّلون النشطون (الحالة Y)</h2>
-                    <span class="stats-count" id="active-referrals-count">0</span>
-                </div>
-                <div class="stats-card balance-card">
-                    <h2>
-                        <i class="fas fa-wallet card-title-icon"></i> الرصيد الحالي
-                    </h2>
-                    <span class="stats-count" id="current-balance">0</span> <span style="font-weight: 700;">$</span>
-                </div>
-            </div> <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-chart-pie card-title-icon"></i> تحليلات الإحالة</h2>
+            <iframe 
+                id="statsIframe" 
+                src="" 
+                style="width: 100%; min-height: 450px; border: none; margin-bottom: 25px; overflow: hidden; display: block;"
+                title="بطاقات احصائيات المسوق والرصيد"
+                scrolling="no" 
+            ></iframe>
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-chart-pie card-title-icon"></i> تحليلات الإحالة</h2>
             <div class="chart-container" id="analytics-charts">
                 <p style="text-align: center; color: #777;">سيتم عرض الرسوم البيانية (Charts) مثل نسبة النشطين مقابل غير النشطين هنا. (يتطلب Chart.js)</p>
                 <canvas id="referral-pie-chart" style="max-height: 250px; margin-top: 15px;"></canvas>
             </div>
+       
+       
             
             
             <div class="stats-card" style="margin-bottom: 20px;">
@@ -668,7 +661,6 @@ function openCoursesDialog() {
 
     // 2. إعداد وعرض النافذة
     iframe.src = ''; 
-    // **تعديل حاسم: إضافة الكلاس لعرض النافذة**
     overlay.classList.add('is-visible'); 
     
     // البدء بتحميل المحتوى
@@ -698,11 +690,23 @@ function closeCoursesDialog() {
 document.getElementById('closeModalBtn').onclick = closeCoursesDialog;
 
 
-// دالة وهمية للتبديل بين الوضع الليلي والنهاري (تتطلب تنفيذاً في JS)
+// ***** التعديل الحاسم لتمرير حالة الوضع الليلي إلى iframe البطاقة *****
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
     const icon = document.getElementById('theme-toggle').querySelector('i');
-    if (document.body.classList.contains('dark-mode')) {
+    
+    // تحديد حالة الثيم
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const message = isDarkMode ? 'dark_mode_on' : 'dark_mode_off';
+    
+    // إرسال رسالة إلى الـ iframe
+    const statsIframe = document.getElementById('statsIframe');
+    if (statsIframe && statsIframe.contentWindow) {
+        statsIframe.contentWindow.postMessage(message, '*'); // '*' تعني إرسال إلى أي مصدر (يمكنك تحديد المصدر لأسباب أمنية)
+    }
+
+    // تحديث الأيقونة
+    if (isDarkMode) {
         icon.classList.remove('fa-moon');
         icon.classList.add('fa-sun');
         document.getElementById('theme-toggle').title = 'تبديل الوضع النهاري';
@@ -712,49 +716,42 @@ function toggleDarkMode() {
         document.getElementById('theme-toggle').title = 'تبديل الوضع الليلي';
     }
 }
+// *******************************************************************
 
 // دالة وهمية لتطبيق الفلترة المتقدمة (تتطلب تنفيذاً في JS)
 function applyAdvancedFilter() {
     console.log("Applying advanced filters...");
-    // هذا يحتاج منطق في ملفات JS الخارجية
 }
 
 // دالة افتراضية موجودة في الكود الأصلي
 function filterReferrals() {
     console.log("Filtering referrals...");
-    // هذا يحتاج منطق في ملفات JS الخارجية
 }
 
 
 // دالة تهيئة مخطط بياني وهمي (Placeholder Chart)
 function initPlaceholderChart() {
     const ctx = document.getElementById('referral-pie-chart');
-    
-    // التأكد من وجود العنصر
     if (!ctx) return; 
 
-    // إزالة رسالة الـ Placeholder بمجرد تهيئة المخطط
     const placeholderMessage = document.querySelector('#analytics-charts p');
     if (placeholderMessage) {
         placeholderMessage.style.display = 'none';
     }
 
-    // بيانات وهمية (Dummy Data) لضمان ظهور المخطط
     const dummyData = {
         labels: ['مسجلون نشطون (Y)', 'مسجلون غير نشطين/معلقين (N/P)'],
         datasets: [{
-            data: [5, 2], // 5 نشطين و 2 غير نشطين كمثال
+            data: [5, 2], 
             backgroundColor: [
-                '#0d3b14', // اللون الأخضر (Primary)
-                '#e5a72d'  // اللون الذهبي (Secondary)
+                '#0d3b14', 
+                '#e5a72d'  
             ],
             hoverOffset: 10
         }]
     };
 
-    // تهيئة المخطط (يتطلب Chart.js)
     try {
-        // تأكد من تحميل Chart
         if (typeof Chart !== 'undefined') {
             new Chart(ctx, {
                 type: 'doughnut', 
@@ -782,17 +779,53 @@ function initPlaceholderChart() {
 }
 
 
-// إزالة محتوى window.onload الأصلي الذي يتعارض مع ملف dashboard.js
-// ستتم إدارة التهيئة بواسطة dashboard.js الآن.
+// ***** الكود الجديد لتهيئة الـ iframe الخاص بالبطاقات *****
+function initStatsIframe() {
+    const urlParams = new URLSearchParams(window.location.search);
+    // نفترض أن ID المسوّق يمر عبر البارامتر 'id' في الرابط الأصلي: ?id=M123
+    const marketerID_from_parent = urlParams.get('id'); 
+    const statsIframe = document.getElementById('statsIframe');
+
+    if (statsIframe) {
+        if (marketerID_from_parent) {
+             // إرسال المعرّف إلى Balance.html كبارامتر 'marketer_id'
+            statsIframe.src = `Balance.html?marketer_id=${marketerID_from_parent}`;
+            document.getElementById('marketer-id-display').innerHTML = `معرّفك: <span class="id-highlight">${marketerID_from_parent}</span>`;
+            // يمكنك هنا إخفاء Skeleton Loading وإظهار DashboardContent
+            document.getElementById('statusMessage').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            
+        } else {
+             // إذا لم يتم العثور على المعرّف
+            statsIframe.src = `Balance.html`; 
+            // لإظهار رسالة الخطأ أو التوجيه داخل الـ iframe
+            
+            // للحفاظ على تجربة المستخدم، يمكنك إخفاء البطاقات والهيكل
+            document.getElementById('statusMessage').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+        }
+        
+        // تطبيق الثيم الأولي على الـ iframe بعد تحميله
+        statsIframe.onload = () => {
+             const message = document.body.classList.contains('dark-mode') ? 'dark_mode_on' : 'dark_mode_off';
+             statsIframe.contentWindow.postMessage(message, '*');
+        };
+    }
+}
+
+// تشغيل وظيفة التهيئة عند تحميل الصفحة
+window.addEventListener('load', initStatsIframe);
+// *********************************************************
+
+
+// ملفات JS الخارجية
+// <script src="marketer_tracker.js"></script> 
+// <script src="table-logic.js"></script> 
+// <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+// <script type="module" src="balance_logic.js"></script> 
+// <script type="module" src="dashboard.js"></script> 
 
 </script>
-
-<script src="marketer_tracker.js"></script> 
-<script src="table-logic.js"></script> 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
-
-<script type="module" src="balance_logic.js"></script> 
-<script type="module" src="dashboard.js"></script> 
 
 </body>
 </html>
