@@ -346,8 +346,8 @@
             background: #1a5c24;
         }
         
-        /* ------------------------------------- */
-        /* تنسيقات الـ Modal الجديدة (FIXED) */
+         /* ------------------------------------- */
+        /* تنسيقات الـ Modal الجديدة (ULTRA-FIX) */
         /* ------------------------------------- */
         
         .modal-overlay {
@@ -356,22 +356,19 @@
             right: 0;
             bottom: 0;
             left: 0;
-            background: rgba(0,0,0,0.7); 
+            background: rgba(0,0,0,0.8); /* زيادة العتامة قليلاً */
             backdrop-filter: blur(5px); 
-            z-index: 99999; /* قيمة عالية جداً لضمان أنه فوق كل شيء */
-            display: none; 
-            align-items: center;
-            justify-content: center;
-            opacity: 0; 
-            transition: opacity 0.3s ease-in-out;
+            z-index: 9999999; /* قيمة قصوى لضمان الظهور فوق أي شيء */
+            display: none; /* مخفي افتراضياً */
+            /* إلغاء الانتقالات مؤقتاً لضمان الظهور */
+            /* transition: opacity 0s; */
         }
         
         .modal-overlay.is-visible {
-            display: flex; /* لعرضها */
-            opacity: 1;
+            display: flex !important; /* فرض العرض باستخدام !important */
+            opacity: 1 !important;    /* فرض العتامة */
         }
 
-        /* تحسينات على محتوى الـ Modal لجعله أكثر بروزاً */
         .modal-content {
             background: var(--white-color);
             border-radius: 20px; 
@@ -381,14 +378,11 @@
             height: 90vh; 
             position: relative;
             padding: 10px;
-            transform: scale(0.95);
-            transition: transform 0.3s ease-in-out;
+            /* إلغاء الانتقالات والتحويلات */
+            transform: none;
+            transition: none; 
         }
         
-        .modal-overlay.is-visible .modal-content {
-            transform: scale(1);
-        }
-
         .modal-iframe {
             width: 100%;
             height: 100%;
@@ -419,6 +413,7 @@
             background: #c9303c;
             transform: rotate(90deg);
         }
+
         /* ------------------------------------- */
 
         
@@ -694,8 +689,40 @@ function filterReferrals() {
 
 </script>
 
+<script>
+// دالة JavaScript المعدلة مع حالة التحميل
+function openCoursesDialog() {
+    const overlay = document.getElementById('coursesModalOverlay');
+    const iframe = document.getElementById('dialogIframe');
+    const coursesBtn = document.querySelector('.courses-btn');
+    
+    // 1. عرض حالة التحميل (UX Enhancement)
+    coursesBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحميل...';
+    coursesBtn.disabled = true; // منع النقر المتعدد
+
+    // 2. إعداد وعرض النافذة
+    iframe.src = ''; // تفريغ المحتوى السابق أولاً
+    overlay.style.display = 'flex';
+    iframe.src = 'courses.html'; // رابط صفحة الدورات الفعلي
+
+    // 3. إعادة الزر لوضعه الطبيعي بعد تحميل المحتوى
+    iframe.onload = () => {
+        coursesBtn.innerHTML = '<i class="fas fa-graduation-cap"></i> اكتشف دوراتنا الآن';
+        coursesBtn.disabled = false;
+    };
+    
+    // معالجة حالة فشل التحميل كـ fallback (اختياري)
+    iframe.onerror = () => {
+        coursesBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> خطأ! حاول مجدداً';
+        coursesBtn.disabled = false;
+    };
+}
+</script>
+
 <script src="marketer_tracker.js"></script> 
 <script src="table-logic.js"></script> 
 <script src="dashboard.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+
 </body>
 </html>
