@@ -1,150 +1,537 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لوحة تحكم المسوِّق - نسخة مطورة</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>لوحة تحكم المسوِّق</title> 
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link rel="stylesheet" href="../assets/fonts/tajawal.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta property="og:title" content="لوحة تحكم المسوِّق" /> 
+    <meta property="og:description" content="راجع إحصائيات إحالتك عبر الرابط الخاص بك." /> 
+    <meta property="og:image" content="https://skillia.netlify.app/images/photo.jpg" />
+    <meta property="og:url" content="https://sklilia.netlify.app/Trainees_Records" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_AR" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/fonts/tajawal.css">
 
-<style>
-:root {
-    --primary-color: #0d3b14;
-    --secondary-color: #e5a72d;
-    --accent-color: #f7f3e9;
-    --text-color-dark: #2d3748;
-    --white-color: #ffffff;
-    --muted-color: #4a5568;
-    --danger-color: #dc3545;
-    --success-color: #28a745;
-    --bg-dark: #1a1a1a;
-    --text-light: #f1f1f1;
-}
+    <link rel="stylesheet" href="table-styles.css"> 
 
-body {
-    font-family:"Tajawal",sans-serif;
-    background: linear-gradient(120deg,var(--accent-color),#eaf0f5);
-    margin:0; padding:0;
-    display:flex; justify-content:center;
-    min-height:100vh; color:var(--text-color-dark);
-}
+    <style>
+        :root {
+            --primary-color: #0d3b14; 
+            --secondary-color: #e5a72d; 
+            --accent-color: #f7f3e9; 
+            --text-color-dark: #2d3748;
+            --danger-color: #dc3545;
+            --white-color: #ffffff; 
+            --muted-color: #4a5568;
+            --success-color: #28a745;
+            --status-y-bg: #e8f9ed; 
+            --status-n-bg: #f9e8e8; 
+            --status-pending-bg: #fff8e8; 
+            /* Dark Mode Variables */
+            --dark-bg: #1e1e1e;
+            --dark-card: #2d2d2d;
+            --dark-text: #f0f0f0;
+            --dark-header: #0d3b14;
+        }
+        
+        /* ------------------------------------- */
+        /* التوافقية الحرجة (CRITICAL FIX) */
+        /* ------------------------------------- */
+        body {
+            font-family: "Tajawal", sans-serif;
+            background: linear-gradient(120deg, var(--accent-color) 0%, #eaf0f5 100%); 
+            margin: 0;
+            padding: 10px; /* تقليل الـ padding الخارجي */
+            min-height: 100vh;
+            color: var(--text-color-dark);
+            /* تغيير آلية التوسيط لضمان التمركز الأفقي */
+            display: block; /* التغيير الرئيسي هنا */
+            text-align: center;
+            box-sizing: border-box;
+            transition: background 0.5s ease;
+        }
 
-.dashboard-container {
-    width:100%; max-width:1000px; margin-top:30px;
-    background:var(--white-color);
-    border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1);
-    overflow:hidden;
-    transition: all 0.3s;
-}
+        .dashboard-container {
+            width: 100%;
+            max-width: 900px; 
+            margin: 40px auto; /* تمركز أفقي مضمون */
+            background: var(--white-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+            transition: background 0.5s ease, box-shadow 0.5s ease;
+            text-align: right; /* إعادة النص لليمين داخل الحاوية */
+        }
+        /* ------------------------------------- */
 
-/* Dark Mode */
-body.dark-mode {
-    background:#121212;
-    color: var(--text-light);
-}
-body.dark-mode .dashboard-container { background: #1e1e1e; }
-body.dark-mode .stats-card { background:#2a2a2a; color:#f1f1f1; }
-body.dark-mode .referral-link-box { background:#2a2a2a; border-color:#444; color:#f1f1f1; }
-body.dark-mode .courses-btn { background: linear-gradient(135deg,#f0b940,#e5a72d); color:#121212; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-/* Header */
-header {
-    background: var(--primary-color); color:#fff;
-    text-align:center; padding:25px; position:relative;
-}
-header h1 { margin:0; font-size:24px; font-weight:800; }
-header p { margin-top:5px; font-size:16px; }
-header .courses-btn {
-    margin-top:15px;
-    background: linear-gradient(135deg,var(--secondary-color),#f0b940);
-    color: var(--primary-color);
-    padding:12px 25px; font-size:17px; font-weight:800;
-    border:none; border-radius:12px; cursor:pointer;
-    display:inline-flex; align-items:center; transition: all 0.3s;
-}
-header .courses-btn:hover { transform:translateY(-2px); background:linear-gradient(135deg,#f0b940,#ffd55b); }
-header .courses-btn i { margin-left:10px; transition: transform 0.3s; }
-header .courses-btn:hover i { transform: rotate(-10deg) scale(1.1); }
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
 
-/* Content */
-.content { padding:30px; }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+        
+        header p {
+            margin-top: 5px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        
+        .id-highlight {
+            font-weight: 900;
+            color: var(--secondary-color);
+            direction: ltr;
+        }
+        
+        /* زر تبديل الثيم */
+        .toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            z-index: 10;
+        }
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(10deg);
+        }
 
-/* Stats Grid */
-.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; margin-bottom:25px; }
-.stats-card {
-    background:var(--accent-color); padding:20px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.05);
-    text-align:center; transition:all 0.3s;
-}
-.stats-card:hover { transform:translateY(-3px); box-shadow:0 6px 15px rgba(0,0,0,0.1); }
-.stats-card h2 { font-size:16px; font-weight:700; margin-top:0; color:var(--primary-color); }
-.stats-count { font-size:40px; font-weight:900; color:var(--secondary-color); margin-top:5px; display:block; }
+        .content {
+            padding: 30px;
+        }
+        
+        /* 1. تنسيق رسالة الحالة والـ Spinner */
+        #statusMessage {
+            padding: 15px;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: none !important;
+        }
+        
+        /* ------------------------------------- */
+        /* تنسيقات Skeleton Loading الجديدة */
+        /* ------------------------------------- */
+        .skeleton {
+            animation: pulse 1.8s infinite ease-in-out;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            opacity: 0.7;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        .skeleton-text {
+            height: 1.2em;
+            margin: 5px auto;
+        }
+        .skeleton-count {
+            height: 40px;
+            width: 60%;
+            margin: 10px auto;
+        }
+        .skeleton-card {
+            min-height: 110px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 20px;
+        }
+        .skeleton-details-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dotted #eee;
+        }
+        .skeleton-details-item .skeleton-text:first-child { width: 40%; }
+        .skeleton-details-item .skeleton-text:last-child { width: 50%; }
 
-/* Referral link */
-.referral-link-box { display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px dashed var(--primary-color); border-radius:10px; cursor:pointer; margin-top:10px; }
-.copy-btn { background:var(--primary-color); color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; transition:background 0.2s; }
-.copy-btn:hover { background:#1a5c24; }
+        /* ------------------------------------- */
+        
+        .loading { color: var(--muted-color); border: 1px solid #ccc;} 
+        .success { background-color: var(--status-y-bg); color: var(--success-color); }
+        .error { background-color: var(--status-n-bg); color: var(--danger-color); }
 
-/* Toast */
-.toast-notification {
-    position: fixed; top:20px; right:20px;
-    background:var(--primary-color); color:white;
-    padding:10px 20px; border-radius:8px;
-    opacity:0; transition:opacity 0.3s;
-    display:flex; align-items:center; box-shadow:0 4px 10px rgba(0,0,0,0.2);
-}
-.toast-notification.show { opacity:1; }
+        .loading .spinner {
+            display: none; 
+        }
 
-/* Skeleton Loader */
-.skeleton-card {
-    height:80px; background:#eee; border-radius:12px;
-    margin-bottom:15px; position:relative; overflow:hidden;
-}
-.skeleton-card::after {
-    content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
-    background: linear-gradient(90deg,#eee,#f5f5f5,#eee);
-    animation: loading 1.5s infinite;
-}
-@keyframes loading { 0% { left:-100%; } 50%{ left:100%; } 100%{ left:100%; } }
+        /* 2. تنسيق الـ Toast Notification المحسَّن */
+        .toast-notification {
+            position: fixed;
+            top: 20px; 
+            right: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            transform: translateX(100%); 
+        }
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(0); 
+        }
+        .toast-notification i {
+            margin-left: 10px;
+        }
+        
+        /* ------------------------------------- */
+        /* تحسينات الـ UI/UX للبطاقات */
+        /* ------------------------------------- */
+        .stats-grid {
+            display: grid;
+            /* تغيير minmax لضمان بقاء عمود واحد على الشاشات الأصغر */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px;
+            margin-bottom: 25px;
+        }
 
-</style>
+        .stats-card {
+            background: linear-gradient(145deg, var(--accent-color) 0%, #ffffff 100%); 
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.2); 
+            cursor: default;
+        }
+        
+        .stats-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+            transform: translateY(-5px) scale(1.01); 
+        }
+
+        .stats-card.active-card {
+            background: linear-gradient(145deg, #e6f7ff, #c3e6ff); 
+            border: 1px solid #90cdf4;
+        }
+
+
+        .stats-card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 16px; 
+            font-weight: 700;
+        }
+        
+        .card-title-icon {
+            margin-left: 8px;
+            color: var(--secondary-color);
+            transition: transform 0.3s;
+        }
+        .stats-card:hover .card-title-icon {
+            transform: scale(1.2) rotate(-5deg);
+        }
+        .active-card .card-title-icon {
+            color: var(--success-color);
+        }
+
+        .stats-count {
+            font-size: 40px; 
+            font-weight: 900;
+            color: var(--secondary-color);
+            display: block;
+            margin-top: 5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* ------------------------------------- */
+        /* تحسين زر 'اكتشف دوراتنا الآن' */
+        /* ------------------------------------- */
+        header .courses-btn {
+            margin-top: 15px;
+            background: linear-gradient(135deg, var(--secondary-color), #f0b940);
+            color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(229, 167, 45, 0.5); 
+            font-size: 17px;
+            padding: 12px 25px; 
+        }
+        
+        .courses-btn:hover {
+            background: linear-gradient(135deg, #f0b940, #ffd55b);
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 20px rgba(229, 167, 45, 0.6);
+        }
+
+        .courses-btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .courses-btn i {
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .courses-btn:hover i {
+            transform: rotate(-10deg) scale(1.1);
+        }
+        
+        /* ------------------------------------- */
+        /* تنسيقات قسم التحليلات والفلاتر المتقدمة */
+        /* ------------------------------------- */
+        .chart-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .filters-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: var(--accent-color);
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .filters-bar select, .filters-bar input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            flex-grow: 1;
+            min-width: 150px;
+            font-family: "Tajawal", sans-serif;
+            font-size: 14px;
+            background: var(--white-color);
+            color: var(--text-color-dark);
+        }
+        .filters-bar button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .filters-bar button:hover {
+            background: #1a5c24;
+        }
+        
+        /* ------------------------------------- */
+        /* الوضع الليلي (Dark Mode) */
+        /* ------------------------------------- */
+        body.dark-mode {
+            background: #0a0a0a !important;
+            color: var(--dark-text);
+        }
+        .dark-mode .dashboard-container {
+            background: var(--dark-bg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .dark-mode header { background: var(--dark-header); }
+        .dark-mode .stats-card { 
+            background: linear-gradient(145deg, var(--dark-card), #3c3c3c); 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+        }
+        .dark-mode .stats-card h2, .dark-mode .detail-value { color: var(--dark-text); }
+        .dark-mode .detail-label { color: #aaa; }
+        
+        .dark-mode .details-card, .dark-mode .referral-link-box, .dark-mode .chart-container, .dark-mode #searchInput { 
+            background: var(--dark-bg); 
+            border-color: #444 !important; 
+            color: var(--dark-text);
+        }
+        .dark-mode .referral-link-box { border: 1px dashed var(--secondary-color); }
+        .dark-mode .detail-item { border-bottom: 1px dotted #333; }
+        .dark-mode .copy-btn { 
+            background: var(--secondary-color); 
+            color: var(--primary-color); 
+        }
+        .dark-mode .filters-bar { background: #121212; border-color: #333; }
+        .dark-mode .filters-bar select, .dark-mode .filters-bar input[type="text"] {
+            background: #121212;
+            color: var(--dark-text);
+            border-color: #333;
+        }
+        
+        /* تحسين الـ Responsive */
+        @media (max-width: 600px) {
+            .content {
+                padding: 15px;
+            }
+            /* جعل البطاقات عمود واحد بشكل صريح */
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters-bar {
+                 /* جعل شريط الفلاتر يتراص بشكل عمودي على الشاشات الصغيرة */
+                flex-direction: column;
+            }
+            .toggle-btn {
+                top: 15px;
+                left: 10px;
+            }
+            header .courses-btn {
+                font-size: 15px;
+                padding: 10px 20px;
+            }
+        }
+        
+    </style>
+
 </head>
 <body>
 
 <div class="dashboard-container">
     <header>
+        <button id="theme-toggle" class="toggle-btn" title="تبديل الوضع الليلي/النهاري" onclick="toggleDarkMode()">
+             <i class="fas fa-moon"></i>
+        </button>
+        
         <h1>لوحة تحكم المسوِّق</h1>
         <p id="marketer-id-display">الرجاء إدخال المعرّف في الرابط</p>
+        
         <button class="courses-btn" onclick="openCoursesDialog()">
             <i class="fas fa-graduation-cap"></i> اكتشف دوراتنا الآن
         </button>
-        <button onclick="toggleDarkMode()" style="position:absolute; top:10px; left:10px;">🌙/☀️</button>
+        
     </header>
 
     <div class="content">
-        <!-- Skeleton Loader -->
-        <div id="skeletonLoader">
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
+        <div id="statusMessage" class="loading" style="text-align:center;">
+            
+            <h2 style="color: var(--muted-color); font-size: 16px; font-weight: 700;">
+                <span class="spinner"></span> جارٍ جلب البيانات وتجهيز لوحة التحكم...
+            </h2>
+            
+            <div class="stats-grid" style="margin-top: 20px;">
+                <div class="stats-card skeleton-card">
+                    <div class="skeleton-text skeleton" style="width: 80%;"></div>
+                    <div class="skeleton-count skeleton"></div>
+                </div>
+                <div class="stats-card active-card skeleton-card">
+                    <div class="skeleton-text skeleton" style="width: 85%;"></div>
+                    <div class="skeleton-count skeleton"></div>
+                </div>
+            </div>
+            
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-address-card card-title-icon"></i> البيانات الشخصية</h2>
+            <div class="details-card skeleton-card" style="min-height: 150px; padding: 10px;">
+                <div class="skeleton-details-item">
+                    <div class="skeleton-text skeleton"></div>
+                    <div class="skeleton-text skeleton"></div>
+                </div>
+                 <div class="skeleton-details-item">
+                    <div class="skeleton-text skeleton"></div>
+                    <div class="skeleton-text skeleton"></div>
+                </div>
+            </div>
+            
         </div>
 
-        <!-- Dashboard Content -->
         <div id="dashboardContent" style="display:none;">
+            
             <div class="stats-grid">
                 <div class="stats-card">
-                    <h2><i class="fas fa-users card-title-icon"></i> إجمالي عدد المسجّلين</h2>
+                    <h2><i class="fas fa-users card-title-icon"></i> إجمالي عدد المسجّلين عبر الرابط الخاص بك</h2>
                     <span class="stats-count" id="referrals-count">0</span>
                 </div>
-                <div class="stats-card">
-                    <h2><i class="fas fa-check-circle card-title-icon"></i> المسجّلون النشطون</h2>
+                <div class="stats-card active-card">
+                    <h2><i class="fas fa-check-circle card-title-icon"></i> المسجّلون النشطون (الحالة Y)</h2>
                     <span class="stats-count" id="active-referrals-count">0</span>
                 </div>
             </div>
-            <!-- Chart -->
-            <canvas id="referralChart" height="150"></canvas>
+            
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-chart-pie card-title-icon"></i> تحليلات الإحالة</h2>
+            <div class="chart-container" id="analytics-charts">
+                <p style="text-align: center; color: #777;">سيتم عرض الرسوم البيانية (Charts) مثل نسبة النشطين مقابل غير النشطين هنا. (يتطلب Chart.js)</p>
+                <canvas id="referral-pie-chart" style="max-height: 250px; margin-top: 15px;"></canvas>
+            </div>
+            
+            
+            <div class="stats-card" style="margin-bottom: 20px;">
+                <h2 style="margin-top: 0;"><i class="fas fa-link card-title-icon"></i> رابط الإحالة الخاص بك</h2>
+                <div class="referral-link-box" id="referral-link-box" title="اضغط لنسخ الرابط">
+                    <span id="referral-link-text">...</span>
+                    <button class="copy-btn" id="copy-btn"><i class="fas fa-copy"></i> نسخ</button>
+                </div>
+                <p style="font-size: 12px; color: #555; margin-top: 10px;">انقر على الرابط أو الزر لنسخه ومشاركته. (تم تحسين رسالة النسخ)</p>
+            </div>
+
+            <h2 style="color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 5px; margin-bottom: 20px;"><i class="fas fa-address-card card-title-icon"></i> البيانات الشخصية</h2>
+            <div class="details-card" id="personal-details">
+                </div>
+
+            <div class="referrals-section">
+                <div class="referrals-header">
+                    <div class="top-row">
+                        <h2 style="margin: 0; color: var(--primary-color); font-size: 18px; font-weight: 700;">قائمة المسجّلين عبر الرابط</h2>
+                        <button class="download-btn" id="download-btn" style="display:none;">
+                            <i class="fas fa-download" style="margin-left: 5px; color: var(--primary-color);"></i>
+                            تنزيل كملف CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filters-bar">
+                    <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم، الهاتف، البريد الإلكتروني..." oninput="filterReferrals()">
+                    <select id="statusFilter" onchange="filterReferrals()">
+                        <option value="">كل الحالات</option>
+                        <option value="Y">نشط (Y)</option>
+                        <option value="N">غير نشط (N)</option>
+                        <option value="P">معلّق (P)</option>
+                    </select>
+                    <select id="cityFilter" onchange="filterReferrals()">
+                        <option value="">كل المدن</option>
+                        </select>
+                    <button onclick="applyAdvancedFilter()"><i class="fas fa-filter"></i> تطبيق الفلاتر</button>
+                </div>
+
+                <div class="cards-container" id="referrals-table-container">
+                    </div>
+            </div>
+            
+            <div id="pagination-controls" style="text-align:center; margin-top: 20px; display: none;">
+                <button class="copy-btn" disabled>السابق</button>
+                <span style="margin: 0 10px; font-weight: 700;">الصفحة 1 من 1</span>
+                <button class="copy-btn">التالي</button>
+            </div>
+            
+            <p style="text-align:center; font-size:12px; color:#888; margin-top: 30px;">البيانات محدثة تلقائيًا من نظام التسجيل الرسمي لمؤسسة كن أنت.</p>
+
         </div>
+
     </div>
 </div>
 
@@ -152,41 +539,74 @@ header .courses-btn:hover i { transform: rotate(-10deg) scale(1.1); }
     <i class="fas fa-check-circle"></i> تم نسخ الرابط إلى الحافظة!
 </div>
 
+<div id="coursesModalOverlay" class="modal-overlay">
+    <div class="modal-content">
+        <button id="closeModalBtn" class="modal-close-btn">&times;</button>
+        
+        <iframe id="dialogIframe" class="modal-iframe" src="" frameborder="0"></iframe>
+    </div>
+</div>
+
+
 <script>
-// Dark Mode Toggle
+// دالة JavaScript المعدلة مع حالة التحميل
+function openCoursesDialog() {
+    const overlay = document.getElementById('coursesModalOverlay');
+    const iframe = document.getElementById('dialogIframe');
+    const coursesBtn = document.querySelector('.courses-btn');
+    
+    // 1. عرض حالة التحميل (UX Enhancement)
+    coursesBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحميل...';
+    coursesBtn.disabled = true; // منع النقر المتعدد
+
+    // 2. إعداد وعرض النافذة
+    iframe.src = ''; // تفريغ المحتوى السابق أولاً
+    overlay.style.display = 'flex';
+    
+    // يمكن هنا إضافة منطق Lazy Loading:
+    // iframe.src = 'about:blank'; // تحميل صفحة فارغة
+    // iframe.setAttribute('data-src', 'courses.html'); 
+    // const actualSrc = iframe.getAttribute('data-src');
+    // iframe.src = actualSrc; // ثم تحميل المحتوى الفعلي
+    
+    iframe.src = 'courses.html'; // رابط صفحة الدورات الفعلي
+
+    // 3. إعادة الزر لوضعه الطبيعي بعد تحميل المحتوى
+    iframe.onload = () => {
+        coursesBtn.innerHTML = '<i class="fas fa-graduation-cap"></i> اكتشف دوراتنا الآن';
+        coursesBtn.disabled = false;
+    };
+    
+    // معالجة حالة فشل التحميل كـ fallback (اختياري)
+    iframe.onerror = () => {
+        coursesBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> خطأ! حاول مجدداً';
+        coursesBtn.disabled = false;
+    };
+}
+
+// دالة وهمية للتبديل بين الوضع الليلي والنهاري (تتطلب تنفيذاً في JS)
 function toggleDarkMode() {
     document.body.classList.toggle('dark-mode');
+    const icon = document.getElementById('theme-toggle').querySelector('i');
+    if (document.body.classList.contains('dark-mode')) {
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        document.getElementById('theme-toggle').title = 'تبديل الوضع النهاري';
+    } else {
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        document.getElementById('theme-toggle').title = 'تبديل الوضع الليلي';
+    }
 }
 
-// Simulate Data Load
-setTimeout(() => {
-    document.getElementById('skeletonLoader').style.display = 'none';
-    document.getElementById('dashboardContent').style.display = 'block';
-
-    // Example Chart
-    const ctx = document.getElementById('referralChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['نشط Y','غير نشط N'],
-            datasets:[{
-                data:[12,8],
-                backgroundColor:['#28a745','#dc3545']
-            }]
-        },
-        options:{
-            plugins:{ legend:{ position:'bottom', labels:{color:'#0d3b14'} } }
-        }
-    });
-
-}, 1500);
-
-// Open Courses Modal
-function openCoursesDialog() {
-    alert('هنا يمكنك فتح صفحة الدورات (Modal)');
+// دالة وهمية لتطبيق الفلترة المتقدمة (تتطلب تنفيذاً في JS)
+function applyAdvancedFilter() {
+    // منطق دمج الفلترة حسب الحالة، العمر، والجنس والمدينة
+    console.log("Applying advanced filters...");
+    // يجب أن تكون هذه الدالة جزءاً من منطق filterReferrals في ملف table-logic.js
 }
-
 </script>
+
 <script src="marketer_tracker.js"></script> 
 <script src="table-logic.js"></script> 
 <script src="dashboard.js"></script> 
