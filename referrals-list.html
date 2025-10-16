@@ -1,0 +1,34 @@
+<div class="referrals-section">
+    <div class="referrals-header">
+        <div class="top-row">
+            <h2 style="margin: 0; color: var(--primary-color); font-size: 18px; font-weight: 700;">قائمة المسجّلين عبر الرابط</h2>
+            <button class="download-btn" id="download-btn" style="display:none;">
+                <i class="fas fa-download" style="margin-left: 5px; color: var(--primary-color);"></i>
+                تنزيل كملف CSV
+            </button>
+        </div>
+    </div>
+    
+    <div class="filters-bar">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم، الهاتف، البريد الإلكتروني..." oninput="filterReferrals()">
+        <select id="statusFilter" onchange="filterReferrals()">
+            <option value="">كل الحالات</option>
+            <option value="Y">نشط (Y)</option>
+            <option value="N">غير نشط (N)</option>
+            <option value="P">معلّق (P)</option>
+        </select>
+        <select id="cityFilter" onchange="filterReferrals()">
+            <option value="">كل المدن</option>
+            </select>
+        <button onclick="applyAdvancedFilter()"><i class="fas fa-filter"></i> تطبيق الفلاتر</button>
+    </div>
+
+    <div class="cards-container" id="referrals-table-container">
+        </div>
+</div>
+
+<div id="pagination-controls" style="text-align:center; margin-top: 20px; display: none;">
+    <button class="copy-btn" disabled>السابق</button>
+    <span style="margin: 0 10px; font-weight: 700;">الصفحة 1 من 1</span>
+    <button class="copy-btn">التالي</button>
+</div>
