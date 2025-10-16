@@ -1,381 +1,347 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بطاقة المسوّق - منافسة</title>
-<link rel="stylesheet" href="../assets/fonts/tajawal.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>إحصائيات المسوِّق</title> 
 
-<style>
-/* ===============================
-   CSS مخصص للبطاقة فقط
-   تم استبدال الألوان الثابتة بمتغيرات CSS لتوافق الثيم
-   =============================== */
-:root {
-  /* سيتم تعريف هذه المتغيرات في الصفحة الرئيسية، يتم استخدامها هنا */
-  --primary-color: #0d3b14; 
-  --secondary-color: #e5a72d; 
-  --accent-color: #f7f3e9; 
-  --text-color-dark: #2d3748;
-  --danger-color: #dc3545;
-  --success-color: #28a745;
-  --white-color: #ffffff; 
-  /* Dark Mode Variables */
-  --dark-bg: #1e1e1e;
-  --dark-card: #2d2d2d;
-  --dark-text: #f0f0f0;
-}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../assets/fonts/tajawal.css">
 
-body{
-  font-family: "Tajawal", sans-serif;
-  background: transparent !important; /* مهم جداً للتوافق داخل الـ iframe */
-  margin:0; 
-  padding:0; 
-  display:block; 
-  min-height:auto; 
-  color: var(--text-color-dark);
-}
+    <style>
+        :root {
+            /* نفس متغيرات الألوان المستخدمة في الملف الرئيسي */
+            --primary-color: #0d3b14; 
+            --secondary-color: #e5a72d; 
+            --accent-color: #f7f3e9; 
+            --text-color-dark: #2d3748;
+            --danger-color: #dc3545;
+            --white-color: #ffffff; 
+            --muted-color: #4a5568;
+            --success-color: #28a745;
+            
+            /* Dark Mode Variables */
+            --dark-bg: #1e1e1e;
+            --dark-card: #2d2d2d;
+            --dark-text: #f0f0f0;
+        }
+        
+        body {
+            font-family: "Tajawal", sans-serif;
+            margin: 0;
+            padding: 0; 
+            background-color: transparent; /* الخلفية شفافة ليظهر لون الخلفية الأصلية */
+            color: var(--text-color-dark);
+            transition: color 0.5s ease;
+            box-sizing: border-box;
+            overflow-x: hidden; 
+        }
 
-.card-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  width: 100%;
-  margin: 0; 
-}
+        /* ------------------------------------- */
+        /* تنسيقات Skeleton Loading الجديدة (مكررة هنا لضمان عملها داخل الـ iframe) */
+        /* ------------------------------------- */
+        .skeleton {
+            animation: pulse 1.8s infinite ease-in-out;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            opacity: 0.7;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        .skeleton-text {
+            height: 1.2em;
+            margin: 5px auto;
+        }
+        .skeleton-count {
+            height: 40px;
+            width: 60%;
+            margin: 10px auto;
+        }
+        .skeleton-card {
+            min-height: 110px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            padding: 20px;
+        }
 
-.card {
-  background: linear-gradient(145deg, var(--white-color), #f0f4f8);
-  border-radius: 20px; 
-  padding: 20px; 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-  text-align: right; 
-  width: 100%; 
-  max-width: none; 
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.2); 
-  position: relative;
-  overflow: hidden;
-}
+        /* ------------------------------------- */
 
-.card:hover {
-  transform: translateY(-3px) scale(1.005); 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* أقل عرض هنا 200px */
+            gap: 20px;
+            margin-bottom: 25px;
+            padding: 20px;
+        }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(13, 59, 20, 0.1) 0%, transparent 60%); 
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-.card:hover::before { opacity: 1; }
+        .stats-card {
+            background: linear-gradient(145deg, var(--accent-color) 0%, var(--white-color) 100%); 
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.2); 
+        }
+        
+        .stats-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+            transform: translateY(-5px) scale(1.01); 
+        }
 
-.card-title {
-  font-size: 1.2rem;
-  color: var(--primary-color);
-  margin-bottom: 15px;
-  font-weight: 700;
-  border-bottom: 2px solid var(--secondary-color);
-  padding-bottom: 5px;
-  display: flex;
-  align-items: center;
-}
-.card-title i { margin-left: 8px; font-size: 1.1em; color: var(--secondary-color); }
+        .stats-card.active-card {
+            background: linear-gradient(145deg, #e6f7ff, #c3e6ff); 
+            border: 1px solid #90cdf4;
+        }
 
-.balance {
-  font-size: 2.5rem; 
-  font-weight: 900;
-  color: var(--primary-color); 
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+        .stats-card h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 16px; 
+            font-weight: 700;
+        }
+        
+        .card-title-icon {
+            margin-left: 8px;
+            color: var(--secondary-color);
+            transition: transform 0.3s;
+        }
+        
+        .active-card .card-title-icon {
+            color: var(--success-color);
+        }
 
-.loader {
-  border: 4px solid var(--accent-color);
-  border-top: 4px solid var(--secondary-color); 
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  margin: 0 auto;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-.sub-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 14px;
-}
-.sub-stats div { 
-  padding: 10px; 
-  border-radius: 12px; 
-  line-height: 1.4;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  font-weight: 700;
-}
-.sub-stats .total { background: #e6f7ff; color: #007b83; }
-.sub-stats .active { background: #e8f9ed; color: var(--success-color); }
-.sub-stats .inactive { background: #f9e8e8; color: var(--danger-color); }
-
-.donut {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: conic-gradient(var(--success-color) 0% 50%, var(--danger-color) 50% 100%);
-  margin: 15px auto;
-  transition: background 1s ease;
-}
-
-button {
-  margin-top: 10px;
-  padding: 10px 22px;
-  border: none;
-  border-radius: 8px;
-  background: var(--primary-color);
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-}
-button:hover { background: #1a5c24; }
-
-.toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: var(--primary-color);
-  color: white;
-  padding: 10px 18px;
-  border-radius: 10px;
-  opacity: 0;
-  transition: opacity 0.5s;
-  z-index: 1000;
-}
-.toast.show { opacity: 1; }
-
-.current-rank {
-  font-size: 1rem;
-  margin: 10px 0;
-  font-weight: 700;
-  color: var(--text-color-dark);
-}
-.current-rank span {
-    color: var(--secondary-color);
-    font-size: 1.3rem;
-    font-weight: 900;
-    margin-left: 5px;
-}
-
-.top3 {
-  background: var(--accent-color);
-  padding: 15px;
-  border-radius: 15px;
-  margin-top: 20px;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
-.top3 h3 { 
-    margin-bottom: 10px; 
-    font-size: 1.1rem; 
-    color: var(--primary-color); 
-    border-bottom: 1px dotted #ccc;
-    padding-bottom: 5px;
-}
-.top3 ol { 
-    padding-right: 25px; 
-    padding-left: 0;
-    text-align: right; 
-    list-style-type: decimal; 
-}
-.top3 li { 
-    margin-bottom: 8px; 
-    font-weight: 500; 
-    color: var(--text-color-dark);
-}
-
-/* ------------------------------------- */
-/* دعم الوضع الليلي (Dark Mode) */
-/* ------------------------------------- */
-body.dark-mode {
-    color: var(--dark-text);
-}
-body.dark-mode .card {
-    background: linear-gradient(145deg, var(--dark-card), #3c3c3c); 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-body.dark-mode .card-title {
-    color: var(--secondary-color);
-}
-body.dark-mode .balance {
-    color: var(--dark-text);
-}
-body.dark-mode .loader {
-    border-top: 4px solid var(--secondary-color); 
-}
-body.dark-mode .sub-stats .total { background: #1a3a4d; color: #8ab4f8; }
-body.dark-mode .sub-stats .active { background: #14351b; color: #6aa84f; }
-body.dark-mode .sub-stats .inactive { background: #3d1b1f; color: #f28b82; }
-body.dark-mode .current-rank { color: var(--dark-text); }
-body.dark-mode .top3 { 
-    background: #121212; 
-    box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
-}
-body.dark-mode .top3 h3 { color: var(--secondary-color); border-bottom: 1px dotted #333;}
-body.dark-mode .top3 li { color: var(--dark-text); }
-body.dark-mode button { background: var(--secondary-color); color: var(--primary-color); }
-body.dark-mode button:hover { background: #f0b940; }
-body.dark-mode .toast { background: var(--secondary-color); color: var(--primary-color); }
-</style>
+        .stats-count {
+            font-size: 40px; 
+            font-weight: 900;
+            color: var(--secondary-color);
+            display: block;
+            margin-top: 5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* تنسيق بطاقة الرصيد */
+        .balance-card {
+            background: linear-gradient(135deg, var(--secondary-color) 10%, var(--accent-color) 90%);
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .balance-card h2 {
+            color: var(--text-color-dark); 
+        }
+        
+        .balance-card .stats-count {
+             color: var(--primary-color); 
+             font-size: 45px; 
+        }
+        
+        .balance-card .card-title-icon {
+            color: var(--primary-color); 
+        }
+        
+        /* رسائل الحالة */
+        #balance-status-message {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--danger-color);
+            background: #fff0f0;
+            border-radius: 10px;
+            margin: 20px;
+        }
+        
+        /* ------------------------------------- */
+        /* الوضع الليلي (Dark Mode) داخل الـ iframe */
+        /* ------------------------------------- */
+        body.dark-mode {
+            color: var(--dark-text);
+        }
+        .dark-mode .stats-card { 
+            background: linear-gradient(145deg, var(--dark-card), #3c3c3c); 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+        }
+        .dark-mode .stats-card h2 { color: var(--dark-text); }
+        .dark-mode .balance-card {
+            background: linear-gradient(135deg, var(--secondary-color) 10%, #3d4a41 90%);
+        }
+        .dark-mode .skeleton {
+            background-color: #444;
+        }
+        .dark-mode .balance-card h2, .dark-mode .balance-card .card-title-icon {
+            color: #121212;
+        }
+        .dark-mode #balance-status-message {
+            background: #401010;
+            color: #ffaaaa;
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+    </style>
 </head>
 <body>
 
-<div class="card-wrapper">
-  <div class="card">
-    <h2 class="card-title"><i class="fas fa-wallet"></i> الرصيد والمنافسة</h2>
-    <div class="balance" id="current-balance"><div class="loader"></div></div>
-
-    <div class="sub-stats">
-      <div class="total">👥 إجمالي: <span id="total-members">...</span></div>
-      <div class="active">✅ نشطون: <span id="active-members">...</span></div>
-      <div class="inactive">❌ خاملون: <span id="inactive-members">...</span></div>
+    <div id="loading-skeleton" class="stats-grid">
+        <div class="stats-card skeleton-card">
+            <div class="skeleton-text skeleton" style="width: 80%;"></div>
+            <div class="skeleton-count skeleton"></div>
+        </div>
+        <div class="stats-card active-card skeleton-card">
+            <div class="skeleton-text skeleton" style="width: 85%;"></div>
+            <div class="skeleton-count skeleton"></div>
+        </div>
+        <div class="stats-card balance-card skeleton-card">
+            <div class="skeleton-text skeleton" style="width: 70%;"></div>
+            <div class="skeleton-count skeleton"></div>
+        </div>
+    </div>
+    
+    <div id="stats-content" class="stats-grid" style="display: none;">
+        
+        <div class="stats-card">
+            <h2><i class="fas fa-users card-title-icon"></i> إجمالي المسجلين</h2>
+            <span id="total-referrals" class="stats-count">0</span>
+        </div>
+        
+        <div class="stats-card active-card">
+            <h2><i class="fas fa-check-circle card-title-icon"></i> الإحالات النشطة</h2>
+            <span id="active-referrals" class="stats-count">0</span>
+        </div>
+        
+        <div class="stats-card balance-card">
+            <h2><i class="fas fa-wallet card-title-icon"></i> الرصيد الحالي</h2>
+            <span id="current-balance" class="stats-count">0$</span>
+        </div>
+        
     </div>
 
-    <div class="donut" id="statusDonut"></div>
-
-    <div class="current-rank">
-      🎯 مركزك الحالي: <span id="current-rank">...</span>
+    <div id="balance-status-message" style="display: none;">
+        الرجاء التأكد من صحة معرف المسوِّق في الرابط.
     </div>
-
-    <div class="top3">
-      <h3>🏆 أفضل 3 مسوّقين</h3>
-      <ol id="top3-list">
-        <li>...</li>
-        <li>...</li>
-        <li>...</li>
-      </ol>
-    </div>
-
-    <button id="refresh-balance">🔄 تحديث البيانات</button>
-  </div>
-
-  <div id="toast" class="toast">تم تحديث البيانات بنجاح ✅</div>
-</div>
+    
 
 <script>
-// ***** تم الإبقاء على رابط Apps Script كما طلب المستخدم *****
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxi5fVMNBLAh_6jTMRs2vptnbjOPUj8_IumUHfZjslI_1UHv6zqCGdKermTw_tZDGQV/exec';
+// ***** رابط Apps Script لجلب الإحصائيات (يجب أن يعيد بيانات JSON تحتوي على الإحصائيات) *****
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxi5fVMNBLAh_6jTMRs2vptnbjOPUj8_IumUHfZjslI_1UHv6zqCGdKermTw_tZDGQV/exec'; 
+// *****************************************************************************************
 
-// ***** التعديل الحاسم: إزالة المعرّف الافتراضي (TTTTTT11) *****
-const params = new URLSearchParams(window.location.search);
-const marketerId = params.get('marketer_id'); 
-// *************************************************************
 
-function showToast(msg, isError=false) {
-  const toast = document.getElementById('toast');
-  const isDarkMode = document.body.classList.contains('dark-mode');
-  const primary = '#007b83'; // Primary-like color for toast (used originally)
-  const secondary = '#e5a72d';
-  
-  toast.textContent = msg;
-  if (isError) {
-      toast.style.background = '#d9534f'; 
-      toast.style.color = 'white';
-  } else {
-      toast.style.background = isDarkMode ? secondary : primary; 
-      toast.style.color = isDarkMode ? '#0d3b14' : 'white';
-  }
-  
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
+// ----------------------------------------------------
+// 1. دالة جلب الإحصائيات من Apps Script
+// ----------------------------------------------------
+async function fetchStats(marketerId) {
+    try {
+        const fetchUrl = `${APPS_SCRIPT_URL}?action=getStats&marketer_id=${encodeURIComponent(marketerId)}`;
+        
+        const response = await fetch(fetchUrl);
+        const data = await response.json();
 
-async function fetchStats(id) {
-  try {
-    const res = await fetch(`${APPS_SCRIPT_URL}?marketer_id=${encodeURIComponent(id)}`);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    return data;
-  } catch(err) {
-    showToast('حدث خطأ أثناء التحديث ❌', true);
-    console.error(err);
-    return null;
-  }
-}
-
-function updateUI(stats) {
-  if (!stats) return;
-
-  document.getElementById('current-balance').textContent = stats.total_commission.toLocaleString('en-US', {minimumFractionDigits:2}) + ' $';
-  document.getElementById('total-members').textContent = stats.total_registered;
-  document.getElementById('active-members').textContent = stats.active;
-  document.getElementById('inactive-members').textContent = stats.inactive;
-
-  const total = stats.active + stats.inactive;
-  const activePercent = total ? (stats.active/total)*100 : 0;
-  const donut = document.getElementById('statusDonut');
-  // استخدام المتغيرات هنا ليس ممكناً مباشرة في JS، لكن استخدام الألوان الثابتة يكفي لتغيير النسبة
-  donut.style.background = `conic-gradient(#28a745 0% ${activePercent}%, #dc3545 ${activePercent}% 100%)`;
-
-  document.getElementById('current-rank').textContent = stats.rank;
-
-  const top3List = document.getElementById('top3-list');
-  top3List.innerHTML = '';
-  stats.top3.forEach((m, index) => {
-    if (m.name) {
-      const li = document.createElement('li');
-      li.textContent = `${m.name} – ${m.total}$`;
-      
-      // تعيين ألوان خاصة للمراكز الثلاثة الأولى (للتأثير البصري)
-      if (index === 0) li.style.color = '#FFD700';
-      if (index === 1) li.style.color = '#C0C0C0';
-      if (index === 2) li.style.color = '#cd7f32';
-      
-      top3List.appendChild(li);
+        // يجب أن تكون الاستجابة بهذا الشكل: 
+        // { total: 10, active: 5, balance: 250, status: 'success' }
+        if (data && data.status === 'success') {
+            return data;
+        } else if (data && data.message) {
+            console.error('API Error:', data.message);
+            return { error: data.message };
+        } else {
+            return { error: 'Invalid API response structure.' };
+        }
+        
+    } catch (e) {
+        console.error('Fetch failed:', e);
+        return { error: `فشل الاتصال: ${e.message}` };
     }
-  });
 }
 
-// دالة تهيئة العرض
+
+// ----------------------------------------------------
+// 2. دالة تحديث العرض
+// ----------------------------------------------------
+function updateDisplay(stats) {
+    const skeleton = document.getElementById('loading-skeleton');
+    const content = document.getElementById('stats-content');
+    const message = document.getElementById('balance-status-message');
+    
+    skeleton.style.display = 'none';
+
+    if (stats.error) {
+        content.style.display = 'none';
+        message.textContent = `❌ خطأ في جلب البيانات: ${stats.error}`;
+        message.style.display = 'block';
+        return;
+    }
+
+    // عرض المحتوى
+    content.style.display = 'grid'; 
+    message.style.display = 'none';
+
+    document.getElementById('total-referrals').textContent = stats.total || 0;
+    document.getElementById('active-referrals').textContent = stats.active || 0;
+    document.getElementById('current-balance').textContent = `${stats.balance || 0}$`;
+}
+
+
+// ----------------------------------------------------
+// 3. الدالة الرئيسية للتهيئة
+// ----------------------------------------------------
 async function initDisplay() {
-  if (!marketerId) {
-    document.getElementById('current-balance').innerHTML = '<span style="font-size: 1.2rem; color: #dc3545; font-weight: 700;">لا يوجد معرّف مسوّق في الرابط.</span>';
-    document.getElementById('total-members').textContent = 0;
-    document.getElementById('active-members').textContent = 0;
-    document.getElementById('inactive-members').textContent = 0;
-    return;
-  }
-  
-  document.getElementById('current-balance').innerHTML = '<div class="loader"></div>';
-  const stats = await fetchStats(marketerId);
-  updateUI(stats);
-  if (stats) showToast('تم تحديث البيانات بنجاح ✅');
+    const params = new URLSearchParams(window.location.search);
+    const marketerId = params.get('marketer_id'); 
+    
+    const skeleton = document.getElementById('loading-skeleton');
+    const content = document.getElementById('stats-content');
+    const message = document.getElementById('balance-status-message');
+    
+    // إظهار الهيكل العظمي (Skeleton) مبدئياً
+    skeleton.style.display = 'grid';
+    content.style.display = 'none';
+    message.style.display = 'none';
+
+
+    if (!marketerId) {
+        // إذا لم يتم تمرير المعرّف
+        skeleton.style.display = 'none';
+        content.style.display = 'none';
+        message.textContent = '❌ المعرّف غير متوفر. يرجى التأكد من رابط الصفحة الرئيسية.';
+        message.style.display = 'block';
+        return;
+    }
+
+    // جلب وعرض البيانات
+    const stats = await fetchStats(marketerId);
+    updateDisplay(stats);
 }
 
-// ***** إضافة مستمع رسائل لتغيير الثيم ديناميكياً من الصفحة الرئيسية *****
-window.addEventListener('message', (event) => {
-  if (event.data === 'dark_mode_on') {
-    document.body.classList.add('dark-mode');
-  } else if (event.data === 'dark_mode_off') {
-    document.body.classList.remove('dark-mode');
-  }
-}, false);
-// *************************************************************************
 
+// ----------------------------------------------------
+// 4. دالة استقبال رسائل الوضع الليلي/النهاري من الصفحة الأم (index.html)
+// ----------------------------------------------------
+function handleThemeMessage(event) {
+    const message = event.data;
+    if (message === 'dark_mode_on') {
+        document.body.classList.add('dark-mode');
+    } else if (message === 'dark_mode_off') {
+        document.body.classList.remove('dark-mode');
+    }
+}
 
-document.getElementById('refresh-balance').addEventListener('click', initDisplay);
-initDisplay();
+// ----------------------------------------------------
+// 5. ربط الدوال
+// ----------------------------------------------------
+window.addEventListener('load', initDisplay);
+window.addEventListener('message', handleThemeMessage);
+
 </script>
-
-
 </body>
 </html>
